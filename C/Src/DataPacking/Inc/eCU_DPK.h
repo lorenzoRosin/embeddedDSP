@@ -1,5 +1,5 @@
 /**
- * @file       eCU_DPK.h
+ * @file       eDSP_DPK.h
  *
  * @brief      Data pack utils
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_DPK_H
-#define ECU_DPK_H
+#ifndef EDSP_DPK_H
+#define EDSP_DPK_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -30,13 +30,13 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eCU_DPK_RES_OK = 0,
-    e_eCU_DPK_RES_BADPARAM,
-    e_eCU_DPK_RES_BADPOINTER,
-	e_eCU_DPK_RES_CORRUPTCTX,
-    e_eCU_DPK_RES_OUTOFMEM,
-    e_eCU_DPK_RES_NOINITLIB,
-}e_eCU_DPK_RES;
+    e_eDSP_DPK_RES_OK = 0,
+    e_eDSP_DPK_RES_BADPARAM,
+    e_eDSP_DPK_RES_BADPOINTER,
+	e_eDSP_DPK_RES_CORRUPTCTX,
+    e_eDSP_DPK_RES_OUTOFMEM,
+    e_eDSP_DPK_RES_NOINITLIB,
+}e_eDSP_DPK_RES;
 
 typedef struct
 {
@@ -45,7 +45,7 @@ typedef struct
 	uint8_t* puMemPK;
 	uint32_t uMemPKL;
 	uint32_t uMemPKCtr;
-}t_eCU_DPK_Ctx;
+}t_eDSP_DPK_Ctx;
 
 
 
@@ -60,11 +60,11 @@ typedef struct
  * @param[in]   p_uMemPKL  - Dimension in byte of the data packer area
  * @param[in]   p_bIsLEnd  - Select if data packer must work in Little Endian or Big Endian
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_BADPARAM     - In case of an invalid parameter passed to the function
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_BADPARAM     - In case of an invalid parameter passed to the function
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_InitCtx(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puMemPK, const uint32_t p_uMemPKL,
+e_eDSP_DPK_RES eDSP_DPK_InitCtx(t_eDSP_DPK_Ctx* const p_ptCtx, uint8_t* p_puMemPK, const uint32_t p_uMemPKL,
                               const bool_t p_bIsLEnd);
 
 /**
@@ -73,22 +73,22 @@ e_eCU_DPK_RES eCU_DPK_InitCtx(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puMemPK, 
  * @param[in]   p_ptCtx      - Data packer context
  * @param[out]  p_pbIsInit   - Pointer to a bool_t variable that will be filled with true if the lib is initialized
  *
- * @return      e_eCU_DPK_RES_BADPOINTER    - In case of bad pointer passed to the function
- *              e_eCU_DPK_RES_OK            - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER    - In case of bad pointer passed to the function
+ *              e_eDSP_DPK_RES_OK            - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_IsInit(t_eCU_DPK_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
+e_eDSP_DPK_RES eDSP_DPK_IsInit(t_eDSP_DPK_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
  * @brief       Reset data packer and restart packing data from start, discharging old data present, if any
  *
  * @param[in]   p_ptCtx         - Data packer context
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_StartNewPack(t_eCU_DPK_Ctx* const p_ptCtx);
+e_eDSP_DPK_RES eDSP_DPK_StartNewPack(t_eDSP_DPK_Ctx* const p_ptCtx);
 
 /**
  * @brief       Retrive the pointer to the stored packed data, and the data size of the packed data.
@@ -97,12 +97,12 @@ e_eCU_DPK_RES eCU_DPK_StartNewPack(t_eCU_DPK_Ctx* const p_ptCtx);
  * @param[out]  p_ppuData   - Pointer to a Pointer pointing to the packed data buffer
  * @param[out]  p_puDataL   - Pointer to a uint32_t variable where the size of the packed data buffer will be placed
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_GetDataReference(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t** p_ppuData, uint32_t* const p_puDataL);
+e_eDSP_DPK_RES eDSP_DPK_GetDataReference(t_eDSP_DPK_Ctx* const p_ptCtx, uint8_t** p_ppuData, uint32_t* const p_puDataL);
 
 /**
  * @brief       Retrive how many byte we have packed
@@ -110,12 +110,12 @@ e_eCU_DPK_RES eCU_DPK_GetDataReference(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t** p
  * @param[in]   p_ptCtx   - Data packer context
  * @param[out]  p_puDataL - Pointer to a uint32_t variable where the size of the packed data buffer will be placed
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_GetNPushed(t_eCU_DPK_Ctx* const p_ptCtx, uint32_t* const p_puDataL);
+e_eDSP_DPK_RES eDSP_DPK_GetNPushed(t_eDSP_DPK_Ctx* const p_ptCtx, uint32_t* const p_puDataL);
 
 /**
  * @brief       Push an array in data packer
@@ -124,14 +124,14 @@ e_eCU_DPK_RES eCU_DPK_GetNPushed(t_eCU_DPK_Ctx* const p_ptCtx, uint32_t* const p
  * @param[in]   p_puData        - Pointer to a memory area containing the data that we want to push
  * @param[in]   p_uDataL        - Data size of the data that we want to push
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_BADPARAM     - In case of an invalid parameter passed to the function
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OUTOFMEM     - Not enought memory to push other data
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_BADPARAM     - In case of an invalid parameter passed to the function
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OUTOFMEM     - Not enought memory to push other data
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_PushArray(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL);
+e_eDSP_DPK_RES eDSP_DPK_PushArray(t_eDSP_DPK_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL);
 
 /**
  * @brief       Push one byte in data packer
@@ -139,13 +139,13 @@ e_eCU_DPK_RES eCU_DPK_PushArray(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puData,
  * @param[in]   p_ptCtx         - Data packer context
  * @param[in]   p_uData         - Data to push in data packer
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OUTOFMEM     - Not enought memory to push other data
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OUTOFMEM     - Not enought memory to push other data
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_PushU8(t_eCU_DPK_Ctx* const p_ptCtx, const uint8_t p_uData);
+e_eDSP_DPK_RES eDSP_DPK_PushU8(t_eDSP_DPK_Ctx* const p_ptCtx, const uint8_t p_uData);
 
 /**
  * @brief       Push 2 byte in data packer
@@ -153,13 +153,13 @@ e_eCU_DPK_RES eCU_DPK_PushU8(t_eCU_DPK_Ctx* const p_ptCtx, const uint8_t p_uData
  * @param[in]   p_ptCtx           - Data packer context
  * @param[in]   p_uData           - Data to push in data packer
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OUTOFMEM     - Not enought memory to push other data
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OUTOFMEM     - Not enought memory to push other data
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_PushU16(t_eCU_DPK_Ctx* const p_ptCtx, const uint16_t p_uData);
+e_eDSP_DPK_RES eDSP_DPK_PushU16(t_eDSP_DPK_Ctx* const p_ptCtx, const uint16_t p_uData);
 
 /**
  * @brief       Push 4 byte in data packer
@@ -167,13 +167,13 @@ e_eCU_DPK_RES eCU_DPK_PushU16(t_eCU_DPK_Ctx* const p_ptCtx, const uint16_t p_uDa
  * @param[in]   p_ptCtx           - Data packer context
  * @param[in]   p_uData           - Data to push in data packer
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OUTOFMEM     - Not enought memory to push other data
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OUTOFMEM     - Not enought memory to push other data
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
-e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uData);
+e_eDSP_DPK_RES eDSP_DPK_PushU32(t_eDSP_DPK_Ctx* const p_ptCtx, const uint32_t p_uData);
 
 /**
  * @brief       Push 8 byte in data packer
@@ -181,13 +181,13 @@ e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uDa
  * @param[in]   p_ptCtx           - Data packer context
  * @param[in]   p_uData           - Data to push in data packer
  *
- * @return      e_eCU_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eCU_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
- *		        e_eCU_DPK_RES_CORRUPTCTX   - In case of a corrupted context
- *              e_eCU_DPK_RES_OUTOFMEM     - Not enought memory to push other data
- *              e_eCU_DPK_RES_OK           - Operation ended correctly
+ * @return      e_eDSP_DPK_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_DPK_RES_NOINITLIB    - Need to init the data packer before taking some action
+ *		        e_eDSP_DPK_RES_CORRUPTCTX   - In case of a corrupted context
+ *              e_eDSP_DPK_RES_OUTOFMEM     - Not enought memory to push other data
+ *              e_eDSP_DPK_RES_OK           - Operation ended correctly
  */
- e_eCU_DPK_RES eCU_DPK_PushU64(t_eCU_DPK_Ctx* const p_ptCtx, const uint64_t p_uData);
+ e_eDSP_DPK_RES eDSP_DPK_PushU64(t_eDSP_DPK_Ctx* const p_ptCtx, const uint64_t p_uData);
 
 
 
@@ -197,4 +197,4 @@ e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uDa
 
 
 
-#endif /* ECU_DPK_H */
+#endif /* EDSP_DPK_H */

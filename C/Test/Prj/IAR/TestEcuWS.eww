@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspace>
     <project>
-        <path>$WS_DIR$\..\..\..\Prj\IAR\LibEcu.ewp</path>
+        <path>$WS_DIR$\..\..\..\Prj\IAR\LibEdsp.ewp</path>
     </project>
     <project>
-        <path>$WS_DIR$\TestEcu.ewp</path>
+        <path>$WS_DIR$\TestEdsp.ewp</path>
     </project>
     <batchBuild>
         <batchDefinition>
             <name>TEST_BUILD</name>
             <member>
-                <project>LibEcu</project>
+                <project>LibEdsp</project>
                 <configuration>Library</configuration>
             </member>
             <member>
-                <project>TestEcu</project>
+                <project>TestEdsp</project>
                 <configuration>Release</configuration>
             </member>
         </batchDefinition>

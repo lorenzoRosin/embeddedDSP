@@ -1,5 +1,5 @@
 /**
- * @file       eCU_BUNSTFPRV.h
+ * @file       eDSP_BUNSTFPRV.h
  *
  * @brief      Byte Unstuffer utils private definition
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_BUNSTFPRV_H
-#define ECU_BUNSTFPRV_H
+#ifndef EDSP_BUNSTFPRV_H
+#define EDSP_BUNSTFPRV_H
 
 
 
@@ -23,12 +23,12 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eCU_BUNSTFPRV_SM_NEEDSOF = 0,
-    e_eCU_BUNSTFPRV_SM_NEEDRAWDATA,
-    e_eCU_BUNSTFPRV_SM_NEEDNEGATEDATA,
-    e_eCU_BUNSTFPRV_SM_UNSTUFFEND,
-    e_eCU_BUNSTFPRV_SM_UNSTUFFFAIL
-}e_eCU_BUNSTFPRV_SM;
+    e_eDSP_BUNSTFPRV_SM_NEEDSOF = 0,
+    e_eDSP_BUNSTFPRV_SM_NEEDRAWDATA,
+    e_eDSP_BUNSTFPRV_SM_NEEDNEGATEDATA,
+    e_eDSP_BUNSTFPRV_SM_UNSTUFFEND,
+    e_eDSP_BUNSTFPRV_SM_UNSTUFFFAIL
+}e_eDSP_BUNSTFPRV_SM;
 
 
 
@@ -38,4 +38,4 @@ typedef enum
 
 
 
-#endif /* ECU_BUNSTFPRV_H */
+#endif /* EDSP_BUNSTFPRV_H */

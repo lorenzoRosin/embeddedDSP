@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CRCD.h
+ * @file       eDSP_CRCD.h
  *
  * @brief      Cal CRC using custom CRC32 using digest approach
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_CRCD_H
-#define ECU_CRCD_H
+#ifndef EDSP_CRCD_H
+#define EDSP_CRCD_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_CRC.h"
+#include "eDSP_CRC.h"
 
 
 
@@ -29,25 +29,25 @@ extern "C" {
  *      TYPEDEFS
  **********************************************************************************************************************/
 /* Define a generic crc callback context that must be implemented by the user */
-typedef struct t_eCU_CRCD_CrcCtxUser t_eCU_CRCD_CrcCtx;
+typedef struct t_eDSP_CRCD_CrcCtxUser t_eDSP_CRCD_CrcCtx;
 
 /* Call back of a function that will calculate the CRC for this modules.
  * the p_ptCtx parameter is a custom pointer that can be used by the creator of this CRC callback, and will not be used
  * by the CRCdigest module */
-typedef bool_t (*f_eCU_CRCD_CrcCb) ( t_eCU_CRCD_CrcCtx* const p_ptCtx, const uint32_t p_uUseed, const uint8_t* p_puData,
+typedef bool_t (*f_eDSP_CRCD_CrcCb) ( t_eDSP_CRCD_CrcCtx* const p_ptCtx, const uint32_t p_uUseed, const uint8_t* p_puData,
                                      const uint32_t p_uDataL, uint32_t* const p_puCrc32Val );
 
 typedef enum
 {
-    e_eCU_CRCD_RES_OK = 0,
-    e_eCU_CRCD_RES_BADPARAM,
-    e_eCU_CRCD_RES_BADPOINTER,
-	e_eCU_CRCD_RES_CORRUPTCTX,
-    e_eCU_CRCD_RES_TOOMANYDIGEST,
-    e_eCU_CRCD_RES_NODIGESTDONE,
-    e_eCU_CRCD_RES_NOINITLIB,
-    e_eCU_CRCD_RES_CLBCKREPORTERROR,
-}e_eCU_CRCD_RES;
+    e_eDSP_CRCD_RES_OK = 0,
+    e_eDSP_CRCD_RES_BADPARAM,
+    e_eDSP_CRCD_RES_BADPOINTER,
+	e_eDSP_CRCD_RES_CORRUPTCTX,
+    e_eDSP_CRCD_RES_TOOMANYDIGEST,
+    e_eDSP_CRCD_RES_NODIGESTDONE,
+    e_eDSP_CRCD_RES_NOINITLIB,
+    e_eDSP_CRCD_RES_CLBCKREPORTERROR,
+}e_eDSP_CRCD_RES;
 
 typedef struct
 {
@@ -55,9 +55,9 @@ typedef struct
     uint32_t uBaseSeed;
 	uint32_t uDigestedTimes;
     uint32_t uLastDigVal;
-    f_eCU_CRCD_CrcCb fCrc;
-    t_eCU_CRCD_CrcCtx* ptCrcCtx;
-}t_eCU_CRCD_Ctx;
+    f_eDSP_CRCD_CrcCb fCrc;
+    t_eDSP_CRCD_CrcCtx* ptCrcCtx;
+}t_eDSP_CRCD_Ctx;
 
 
 
@@ -71,11 +71,11 @@ typedef struct
  * @param[in]   p_fCrc        - Pointer to a CRC 32 p_uUseed callback function, that will be used to calculate the CRC32
  * @param[in]   p_ptFctx      - Custom context passed to the callback function p_fCrc
  *
- * @return      e_eCU_CRCD_RES_BADPOINTER     - In case of bad pointer passed to the function
- *              e_eCU_CRCD_RES_OK             - Crc digester initialized successfully
+ * @return      e_eDSP_CRCD_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK             - Crc digester initialized successfully
  */
-e_eCU_CRCD_RES eCU_CRCD_InitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, f_eCU_CRCD_CrcCb p_fCrc,
-                                t_eCU_CRCD_CrcCtx* const p_ptFctx);
+e_eDSP_CRCD_RES eDSP_CRCD_InitCtx(t_eDSP_CRCD_Ctx* const p_ptCtx, f_eDSP_CRCD_CrcCb p_fCrc,
+                                t_eDSP_CRCD_CrcCtx* const p_ptFctx);
 
 /**
  * @brief       Initialize the CRC32 digester context using a selected p_uUseed
@@ -85,11 +85,11 @@ e_eCU_CRCD_RES eCU_CRCD_InitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, f_eCU_CRCD_CrcCb 
  * @param[in]   p_fCrc      - Pointer to a CRC 32 p_uUseed callback function, that will be used to calculate the CRC32
  * @param[in]   p_ptFctx    - Custom context passed to the callback function p_fCrc
  *
- * @return      e_eCU_CRCD_RES_BADPOINTER     - In case of bad pointer passed to the function
- *              e_eCU_CRCD_RES_OK             - Crc digester initialized successfully
+ * @return      e_eDSP_CRCD_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK             - Crc digester initialized successfully
  */
-e_eCU_CRCD_RES eCU_CRCD_SeedInitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, const uint32_t p_uUseed, f_eCU_CRCD_CrcCb p_fCrc,
-                                    t_eCU_CRCD_CrcCtx* const p_ptFctx);
+e_eDSP_CRCD_RES eDSP_CRCD_SeedInitCtx(t_eDSP_CRCD_Ctx* const p_ptCtx, const uint32_t p_uUseed, f_eDSP_CRCD_CrcCb p_fCrc,
+                                    t_eDSP_CRCD_CrcCtx* const p_ptFctx);
 
 /**
  * @brief       Check if the lib is initialized
@@ -97,22 +97,22 @@ e_eCU_CRCD_RES eCU_CRCD_SeedInitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, const uint32_
  * @param[in]   p_ptCtx         - Crc digester context
  * @param[out]  p_pbIsInit      - Pointer to a bool_t variable that will be filled with true if the lib is initialized
  *
- * @return      e_eCU_CRCD_RES_BADPOINTER    - In case of bad pointer passed to the function
- *              e_eCU_CRCD_RES_OK            - Operation ended correctly
+ * @return      e_eDSP_CRCD_RES_BADPOINTER    - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK            - Operation ended correctly
  */
-e_eCU_CRCD_RES eCU_CRCD_IsInit(t_eCU_CRCD_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
+e_eDSP_CRCD_RES eDSP_CRCD_IsInit(t_eDSP_CRCD_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
  * @brief       Restart the digester and disharge all old value
  *
  * @param[in]   p_ptCtx         - Crc digester context
  *
- * @return      e_eCU_CRCD_RES_BADPOINTER         - In case of bad pointer passed to the function
- *              e_eCU_CRCD_RES_OK                 - Data digested successfully
- *              e_eCU_CRCD_RES_NOINITLIB          - Need to init the lib before taking some action
- *              e_eCU_CRCD_RES_CORRUPTCTX         - In case of a corrupted context
+ * @return      e_eDSP_CRCD_RES_BADPOINTER         - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK                 - Data digested successfully
+ *              e_eDSP_CRCD_RES_NOINITLIB          - Need to init the lib before taking some action
+ *              e_eDSP_CRCD_RES_CORRUPTCTX         - In case of a corrupted context
  */
-e_eCU_CRCD_RES eCU_CRCD_Restart(t_eCU_CRCD_Ctx* const p_ptCtx);
+e_eDSP_CRCD_RES eDSP_CRCD_Restart(t_eDSP_CRCD_Ctx* const p_ptCtx);
 
 /**
  * @brief       Digest a chunk of data that we want to calculate CRC
@@ -121,30 +121,30 @@ e_eCU_CRCD_RES eCU_CRCD_Restart(t_eCU_CRCD_Ctx* const p_ptCtx);
  * @param[in]   p_puData          - Pointer to a memory area containg a chunk of data to digest
  * @param[in]   p_uDataL          - Lenght of the buffer we will digest
  *
- * @return      e_eCU_CRCD_RES_BADPOINTER         - In case of bad pointer passed to the function
- *              e_eCU_CRCD_RES_OK                 - Data digested successfully
- *              e_eCU_CRCD_RES_NOINITLIB          - Need to init the lib before taking some action
- *              e_eCU_CRCD_RES_BADPARAM           - In case of bad parameter passed to the function
- *              e_eCU_CRCD_RES_CORRUPTCTX         - In case of a corrupted context
- *              e_eCU_CRCD_RES_TOOMANYDIGEST      - Too many digest operation
- *              e_eCU_CRCD_RES_CLBCKREPORTERROR   - The callback function reported an error
+ * @return      e_eDSP_CRCD_RES_BADPOINTER         - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK                 - Data digested successfully
+ *              e_eDSP_CRCD_RES_NOINITLIB          - Need to init the lib before taking some action
+ *              e_eDSP_CRCD_RES_BADPARAM           - In case of bad parameter passed to the function
+ *              e_eDSP_CRCD_RES_CORRUPTCTX         - In case of a corrupted context
+ *              e_eDSP_CRCD_RES_TOOMANYDIGEST      - Too many digest operation
+ *              e_eDSP_CRCD_RES_CLBCKREPORTERROR   - The callback function reported an error
  */
-e_eCU_CRCD_RES eCU_CRCD_Digest(t_eCU_CRCD_Ctx* const p_ptCtx, const uint8_t* p_puData, const uint32_t p_uDataL);
+e_eDSP_CRCD_RES eDSP_CRCD_Digest(t_eDSP_CRCD_Ctx* const p_ptCtx, const uint8_t* p_puData, const uint32_t p_uDataL);
 
 /**
- * @brief       Retrive the CRC32 of all the chunk digested using eCU_CRCD_Digest. After this function is used the
+ * @brief       Retrive the CRC32 of all the chunk digested using eDSP_CRCD_Digest. After this function is used the
  *              internal state is resetted and old result are discharged.
  *
  * @param[in]   p_ptCtx       - Crc digester context
  * @param[out]  p_puCrcCalc   - Pointer to a memory area that will contain the value of the calculated CRC
  *
- * @return      e_eCU_CRCD_RES_BADPOINTER         - In case of bad pointer passed to the function
- *              e_eCU_CRCD_RES_OK                 - Data digested successfully
- *              e_eCU_CRCD_RES_NOINITLIB          - Need to init the lib before taking some action
- *              e_eCU_CRCD_RES_CORRUPTCTX         - In case of a corrupted context
- *              e_eCU_CRCD_RES_NODIGESTDONE       - Need to do al least one digest before getting the CRC32
+ * @return      e_eDSP_CRCD_RES_BADPOINTER         - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK                 - Data digested successfully
+ *              e_eDSP_CRCD_RES_NOINITLIB          - Need to init the lib before taking some action
+ *              e_eDSP_CRCD_RES_CORRUPTCTX         - In case of a corrupted context
+ *              e_eDSP_CRCD_RES_NODIGESTDONE       - Need to do al least one digest before getting the CRC32
  */
-e_eCU_CRCD_RES eCU_CRCD_GetDigestVal(t_eCU_CRCD_Ctx* const p_ptCtx, uint32_t* const p_puCrcCalc);
+e_eDSP_CRCD_RES eDSP_CRCD_GetDigestVal(t_eDSP_CRCD_Ctx* const p_ptCtx, uint32_t* const p_puCrcCalc);
 
 
 
@@ -154,4 +154,4 @@ e_eCU_CRCD_RES eCU_CRCD_GetDigestVal(t_eCU_CRCD_Ctx* const p_ptCtx, uint32_t* co
 
 
 
-#endif /* ECU_CRCD_H */
+#endif /* EDSP_CRCD_H */

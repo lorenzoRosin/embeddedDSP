@@ -1,5 +1,5 @@
 /**
- * @file       eCU_BSTFBUNSTFTST.h
+ * @file       eDSP_BSTFBUNSTFTST.h
  *
  * @brief      Data stuffer and unstuffer test
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_BSTFBUNSTFTST_H
-#define ECU_BSTFBUNSTFTST_H
+#ifndef EDSP_BSTFBUNSTFTST_H
+#define EDSP_BSTFBUNSTFTST_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -35,7 +35,7 @@ extern "C" {
  *
  * @return      none
  */
-void eCU_BSTFBUNSTFTST_ExeTest(void);
+void eDSP_BSTFBUNSTFTST_ExeTest(void);
 
 
 
@@ -45,4 +45,4 @@ void eCU_BSTFBUNSTFTST_ExeTest(void);
 
 
 
-#endif /* ECU_BSTFBUNSTFTST_H */
+#endif /* EDSP_BSTFBUNSTFTST_H */

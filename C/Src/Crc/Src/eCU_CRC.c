@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CRC.c
+ * @file       eDSP_CRC.c
  *
  * @brief      Cal crc32 (CRC-32/MPEG-2) utils
  *
@@ -10,19 +10,19 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_CRC.h"
+#include "eDSP_CRC.h"
 
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eCU_CRC_RES eCU_CRC_32(const uint8_t* p_puData, const uint32_t p_uDataL, uint32_t* const p_puCrc)
+e_eDSP_CRC_RES eDSP_CRC_32(const uint8_t* p_puData, const uint32_t p_uDataL, uint32_t* const p_puCrc)
 {
-	return eCU_CRC_32Seed(eCU_CRC_BASE_SEED, p_puData, p_uDataL, p_puCrc);
+	return eDSP_CRC_32Seed(eDSP_CRC_BASE_SEED, p_puData, p_uDataL, p_puCrc);
 }
 
-e_eCU_CRC_RES eCU_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, const uint32_t p_uDataL, 
+e_eDSP_CRC_RES eDSP_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, const uint32_t p_uDataL, 
                              uint32_t* const p_puCrc)
 {
     /* lookup table */
@@ -73,7 +73,7 @@ e_eCU_CRC_RES eCU_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, co
     };
 
 	/* Local variable */
-	e_eCU_CRC_RES l_eRes;
+	e_eDSP_CRC_RES l_eRes;
 	uint32_t l_uLen;
     uint32_t l_uLenStart;
 	uint32_t l_uSeedCalc;
@@ -83,7 +83,7 @@ e_eCU_CRC_RES eCU_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, co
 	/* Check pointer validity */
 	if( ( NULL == p_puData) || ( NULL == p_puCrc) )
 	{
-		l_eRes = e_eCU_CRC_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRC_RES_BADPOINTER;
 	}
 	else
 	{
@@ -107,7 +107,7 @@ e_eCU_CRC_RES eCU_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, co
 			l_uSeedCalc = l_auCrctable[l_uIndexCalc] ^ ( l_uMiddleShift );
 		}
 
-		l_eRes = e_eCU_CRC_RES_OK;
+		l_eRes = e_eDSP_CRC_RES_OK;
 		*p_puCrc = l_uSeedCalc;
 	}
 

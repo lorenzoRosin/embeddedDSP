@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CRC.h
+ * @file       eDSP_CRC.h
  *
  * @brief      Cal crc32 (CRC-32/MPEG-2) utils
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_CRC_H
-#define ECU_CRC_H
+#ifndef EDSP_CRC_H
+#define EDSP_CRC_H
 
 
 
@@ -21,14 +21,14 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
 /***********************************************************************************************************************
  *      DEFINES
  **********************************************************************************************************************/
-#define eCU_CRC_BASE_SEED                                                                    ( (uint32_t ) 0xFFFFFFFFu )
+#define eDSP_CRC_BASE_SEED                                                                    ( (uint32_t ) 0xFFFFFFFFu )
 
 
 
@@ -37,9 +37,9 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eCU_CRC_RES_OK = 0,
-    e_eCU_CRC_RES_BADPOINTER
-}e_eCU_CRC_RES;
+    e_eDSP_CRC_RES_OK = 0,
+    e_eDSP_CRC_RES_BADPOINTER
+}e_eDSP_CRC_RES;
 
 
 
@@ -53,10 +53,10 @@ typedef enum
  * @param[in]   p_uDataL      - How many byte will be used to calculate the CRC 32
  * @param[out]  p_puCrc       - Pointer to an uint32_t were we will store the calculated CRC 32
  *
- * @return      e_eCU_CRC_RES_BADPOINTER      - In case of bad pointer passed to the function
- *              e_eCU_CRC_RES_OK              - Crc 32 calculated successfully
+ * @return      e_eDSP_CRC_RES_BADPOINTER      - In case of bad pointer passed to the function
+ *              e_eDSP_CRC_RES_OK              - Crc 32 calculated successfully
  */
-e_eCU_CRC_RES eCU_CRC_32(const uint8_t* p_puData, const uint32_t p_uDataL, uint32_t* const p_puCrc);
+e_eDSP_CRC_RES eDSP_CRC_32(const uint8_t* p_puData, const uint32_t p_uDataL, uint32_t* const p_puCrc);
 
 
 /**
@@ -67,10 +67,10 @@ e_eCU_CRC_RES eCU_CRC_32(const uint8_t* p_puData, const uint32_t p_uDataL, uint3
  * @param[in]   p_uDataL    - How many byte will be used to calculate the CRC 32
  * @param[out]  p_puCrc     - Pointer to an uint32_t were we will store the calculated CRC 32
  *
- * @return      e_eCU_CRC_RES_BADPOINTER      - In case of bad pointer passed to the function
- *              e_eCU_CRC_RES_OK              - Crc 32 calculated successfully
+ * @return      e_eDSP_CRC_RES_BADPOINTER      - In case of bad pointer passed to the function
+ *              e_eDSP_CRC_RES_OK              - Crc 32 calculated successfully
  */
-e_eCU_CRC_RES eCU_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, const uint32_t p_uDataL,
+e_eDSP_CRC_RES eDSP_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, const uint32_t p_uDataL,
                              uint32_t* const p_puCrc);
 
 
@@ -81,4 +81,4 @@ e_eCU_CRC_RES eCU_CRC_32Seed(const uint32_t p_uSeed, const uint8_t* p_puData, co
 
 
 
-#endif /* ECU_CRC_H */
+#endif /* EDSP_CRC_H */

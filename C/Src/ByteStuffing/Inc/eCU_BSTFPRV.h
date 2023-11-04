@@ -1,5 +1,5 @@
 /**
- * @file       eCU_BSTFPRV.h
+ * @file       eDSP_BSTFPRV.h
  *
  * @brief      Byte stuffer utils private definition
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_BSTFPRV_H
-#define ECU_BSTFPRV_H
+#ifndef EDSP_BSTFPRV_H
+#define EDSP_BSTFPRV_H
 
 
 
@@ -23,12 +23,12 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eCU_BSTFPRV_SM_NEEDSOF = 0,
-    e_eCU_BSTFPRV_SM_NEEDRAWDATA,
-    e_eCU_BSTFPRV_SM_NEEDNEGATEPRECDATA,
-	e_eCU_BSTFPRV_SM_NEEDEOF,
-    e_eCU_BSTFPRV_SM_STUFFEND
-}e_eCU_BSTFPRV_SM;
+    e_eDSP_BSTFPRV_SM_NEEDSOF = 0,
+    e_eDSP_BSTFPRV_SM_NEEDRAWDATA,
+    e_eDSP_BSTFPRV_SM_NEEDNEGATEPRECDATA,
+	e_eDSP_BSTFPRV_SM_NEEDEOF,
+    e_eDSP_BSTFPRV_SM_STUFFEND
+}e_eDSP_BSTFPRV_SM;
 
 
 
@@ -38,4 +38,4 @@ typedef enum
 
 
 
-#endif /* ECU_BSTFPRV_H */
+#endif /* EDSP_BSTFPRV_H */

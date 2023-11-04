@@ -1,5 +1,5 @@
 /**
- * @file       eCU_BUSTFTST.h
+ * @file       eDSP_BUSTFTST.h
  *
  * @brief      Byte unstuffer test
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_BUSTFTST_H
-#define ECU_BUSTFTST_H
+#ifndef EDSP_BUSTFTST_H
+#define EDSP_BUSTFTST_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -35,7 +35,7 @@ extern "C" {
  *
  * @return      none
  */
-void eCU_BUSTFTST_ExeTest(void);
+void eDSP_BUSTFTST_ExeTest(void);
 
 
 
@@ -45,4 +45,4 @@ void eCU_BUSTFTST_ExeTest(void);
 
 
 
-#endif /* ECU_BUSTFTST_H */
+#endif /* EDSP_BUSTFTST_H */

@@ -1,14 +1,14 @@
 /**
- * @file       eCU_TYPE.h
+ * @file       eDSP_TYPE.h
  *
- * @brief      Ecu lib type header
+ * @brief      Edsp lib type header
  *
  * @author     Lorenzo Rosin
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_TYPE_H
-#define ECU_TYPE_H
+#ifndef EDSP_TYPE_H
+#define EDSP_TYPE_H
 
 
 
@@ -21,16 +21,16 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_STANDARDTYPE.h"
+#include "eDSP_STANDARDTYPE.h"
 
 
 
 /***********************************************************************************************************************
  *      DEFINES
  **********************************************************************************************************************/
-#define ECU_SOF                                                                                    ( ( uint8_t ) 0xA1u )
-#define ECU_EOF                                                                                    ( ( uint8_t ) 0xA2u )
-#define ECU_ESC                                                                                    ( ( uint8_t ) 0xA3u )
+#define EDSP_SOF                                                                                    ( ( uint8_t ) 0xA1u )
+#define EDSP_EOF                                                                                    ( ( uint8_t ) 0xA2u )
+#define EDSP_ESC                                                                                    ( ( uint8_t ) 0xA3u )
 
 
 
@@ -40,4 +40,4 @@ extern "C" {
 
 
 
-#endif /* ECU_TYPE_H */
+#endif /* EDSP_TYPE_H */

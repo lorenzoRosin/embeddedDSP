@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CRCD.c
+ * @file       eDSP_CRCD.c
  *
  * @brief      Cal CRC using custom CRC32 using digest approach
  *
@@ -10,57 +10,57 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_CRCD.h"
+#include "eDSP_CRCD.h"
 
 
 
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eCU_CRCD_IsStatusStillCoherent(const t_eCU_CRCD_Ctx* p_ptCtx);
+static bool_t eDSP_CRCD_IsStatusStillCoherent(const t_eDSP_CRCD_Ctx* p_ptCtx);
 
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eCU_CRCD_RES eCU_CRCD_InitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, f_eCU_CRCD_CrcCb p_fCrc,
-                                t_eCU_CRCD_CrcCtx* const p_ptFctx)
+e_eDSP_CRCD_RES eDSP_CRCD_InitCtx(t_eDSP_CRCD_Ctx* const p_ptCtx, f_eDSP_CRCD_CrcCb p_fCrc,
+                                t_eDSP_CRCD_CrcCtx* const p_ptFctx)
 {
 	/* Local variable */
-	e_eCU_CRCD_RES l_eRes;
+	e_eDSP_CRCD_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx) || ( NULL ==  p_fCrc) || ( NULL ==  p_ptFctx) )
 	{
-		l_eRes = e_eCU_CRCD_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRCD_RES_BADPOINTER;
 	}
 	else
 	{
         /* Init context */
 		p_ptCtx->bIsInit = true;
-		p_ptCtx->uBaseSeed = eCU_CRC_BASE_SEED;
+		p_ptCtx->uBaseSeed = eDSP_CRC_BASE_SEED;
 		p_ptCtx->uDigestedTimes = 0u;
 		p_ptCtx->uLastDigVal = 0u;
 		p_ptCtx->fCrc = p_fCrc;
         p_ptCtx->ptCrcCtx = p_ptFctx;
 
-		l_eRes = e_eCU_CRCD_RES_OK;
+		l_eRes = e_eDSP_CRCD_RES_OK;
     }
 
 	return l_eRes;
 }
 
-e_eCU_CRCD_RES eCU_CRCD_SeedInitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, const uint32_t p_uUseed, f_eCU_CRCD_CrcCb p_fCrc,
-                                    t_eCU_CRCD_CrcCtx* const p_ptFctx)
+e_eDSP_CRCD_RES eDSP_CRCD_SeedInitCtx(t_eDSP_CRCD_Ctx* const p_ptCtx, const uint32_t p_uUseed, f_eDSP_CRCD_CrcCb p_fCrc,
+                                    t_eDSP_CRCD_CrcCtx* const p_ptFctx)
 {
 	/* Local variable */
-	e_eCU_CRCD_RES l_eRes;
+	e_eDSP_CRCD_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx) || ( NULL ==  p_fCrc) || ( NULL ==  p_ptFctx) )
 	{
-		l_eRes = e_eCU_CRCD_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRCD_RES_BADPOINTER;
 	}
 	else
 	{
@@ -72,54 +72,54 @@ e_eCU_CRCD_RES eCU_CRCD_SeedInitCtx(t_eCU_CRCD_Ctx* const p_ptCtx, const uint32_
 		p_ptCtx->fCrc = p_fCrc;
         p_ptCtx->ptCrcCtx = p_ptFctx;
 
-		l_eRes = e_eCU_CRCD_RES_OK;
+		l_eRes = e_eDSP_CRCD_RES_OK;
     }
 
 	return l_eRes;
 }
 
-e_eCU_CRCD_RES eCU_CRCD_IsInit(t_eCU_CRCD_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_CRCD_RES eDSP_CRCD_IsInit(t_eDSP_CRCD_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eCU_CRCD_RES l_eRes;
+	e_eDSP_CRCD_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eCU_CRCD_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRCD_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eCU_CRCD_RES_OK;
+        l_eRes = e_eDSP_CRCD_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eCU_CRCD_RES eCU_CRCD_Restart(t_eCU_CRCD_Ctx* const p_ptCtx)
+e_eDSP_CRCD_RES eDSP_CRCD_Restart(t_eDSP_CRCD_Ctx* const p_ptCtx)
 {
 	/* Local variable */
-	e_eCU_CRCD_RES l_eRes;
+	e_eDSP_CRCD_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_CRCD_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRCD_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CRCD_RES_NOINITLIB;
+			l_eRes = e_eDSP_CRCD_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_CRCD_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CRCD_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CRCD_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CRCD_RES_CORRUPTCTX;
             }
             else
             {
@@ -127,7 +127,7 @@ e_eCU_CRCD_RES eCU_CRCD_Restart(t_eCU_CRCD_Ctx* const p_ptCtx)
                 p_ptCtx->uDigestedTimes = 0u;
                 p_ptCtx->uLastDigVal = 0u;
 
-                l_eRes = e_eCU_CRCD_RES_OK;
+                l_eRes = e_eDSP_CRCD_RES_OK;
             }
         }
     }
@@ -135,46 +135,46 @@ e_eCU_CRCD_RES eCU_CRCD_Restart(t_eCU_CRCD_Ctx* const p_ptCtx)
     return l_eRes;
 }
 
-e_eCU_CRCD_RES eCU_CRCD_Digest(t_eCU_CRCD_Ctx* const p_ptCtx, const uint8_t* p_puData, const uint32_t p_uDataL)
+e_eDSP_CRCD_RES eDSP_CRCD_Digest(t_eDSP_CRCD_Ctx* const p_ptCtx, const uint8_t* p_puData, const uint32_t p_uDataL)
 {
 	/* Local variable */
-	e_eCU_CRCD_RES l_eRes;
+	e_eDSP_CRCD_RES l_eRes;
     uint32_t l_uC32;
     bool_t l_bRes;
-    f_eCU_CRCD_CrcCb l_fCb;
+    f_eDSP_CRCD_CrcCb l_fCb;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puData ) )
 	{
-		l_eRes = e_eCU_CRCD_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRCD_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CRCD_RES_NOINITLIB;
+			l_eRes = e_eDSP_CRCD_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_CRCD_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CRCD_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CRCD_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CRCD_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check data validity */
                 if( p_uDataL <= 0u )
                 {
-                    l_eRes = e_eCU_CRCD_RES_BADPARAM;
+                    l_eRes = e_eDSP_CRCD_RES_BADPARAM;
                 }
                 else
                 {
                     /* Check if we have memory for this */
                     if( p_ptCtx->uDigestedTimes >= MAX_UINT32VAL )
                     {
-                        l_eRes = e_eCU_CRCD_RES_TOOMANYDIGEST;
+                        l_eRes = e_eDSP_CRCD_RES_TOOMANYDIGEST;
                     }
                     else
                     {
@@ -189,11 +189,11 @@ e_eCU_CRCD_RES eCU_CRCD_Digest(t_eCU_CRCD_Ctx* const p_ptCtx, const uint8_t* p_p
                             {
                                 p_ptCtx->uDigestedTimes++;
                                 p_ptCtx->uLastDigVal = l_uC32;
-								l_eRes = e_eCU_CRCD_RES_OK;
+								l_eRes = e_eDSP_CRCD_RES_OK;
                             }
 							else
 							{
-								l_eRes = e_eCU_CRCD_RES_CLBCKREPORTERROR;
+								l_eRes = e_eDSP_CRCD_RES_CLBCKREPORTERROR;
 							}
                         }
                         else
@@ -206,11 +206,11 @@ e_eCU_CRCD_RES eCU_CRCD_Digest(t_eCU_CRCD_Ctx* const p_ptCtx, const uint8_t* p_p
                             {
                                 p_ptCtx->uDigestedTimes++;
                                 p_ptCtx->uLastDigVal = l_uC32;
-								l_eRes = e_eCU_CRCD_RES_OK;
+								l_eRes = e_eDSP_CRCD_RES_OK;
                             }
 							else
 							{
-								l_eRes = e_eCU_CRCD_RES_CLBCKREPORTERROR;
+								l_eRes = e_eDSP_CRCD_RES_CLBCKREPORTERROR;
 							}
                         }
                     }
@@ -222,29 +222,29 @@ e_eCU_CRCD_RES eCU_CRCD_Digest(t_eCU_CRCD_Ctx* const p_ptCtx, const uint8_t* p_p
 	return l_eRes;
 }
 
-e_eCU_CRCD_RES eCU_CRCD_GetDigestVal(t_eCU_CRCD_Ctx* const p_ptCtx, uint32_t* const p_puCrcCalc)
+e_eDSP_CRCD_RES eDSP_CRCD_GetDigestVal(t_eDSP_CRCD_Ctx* const p_ptCtx, uint32_t* const p_puCrcCalc)
 {
 	/* Local variable */
-	e_eCU_CRCD_RES l_eRes;
+	e_eDSP_CRCD_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puCrcCalc ) )
 	{
-		l_eRes = e_eCU_CRCD_RES_BADPOINTER;
+		l_eRes = e_eDSP_CRCD_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CRCD_RES_NOINITLIB;
+			l_eRes = e_eDSP_CRCD_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_CRCD_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CRCD_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CRCD_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CRCD_RES_CORRUPTCTX;
             }
 			else
 			{
@@ -252,7 +252,7 @@ e_eCU_CRCD_RES eCU_CRCD_GetDigestVal(t_eCU_CRCD_Ctx* const p_ptCtx, uint32_t* co
                 if( p_ptCtx->uDigestedTimes <= 0u )
                 {
                     /* Cannot retrive undigested value */
-                    l_eRes = e_eCU_CRCD_RES_NODIGESTDONE;
+                    l_eRes = e_eDSP_CRCD_RES_NODIGESTDONE;
                 }
                 else
                 {
@@ -263,7 +263,7 @@ e_eCU_CRCD_RES eCU_CRCD_GetDigestVal(t_eCU_CRCD_Ctx* const p_ptCtx, uint32_t* co
                     p_ptCtx->uDigestedTimes = 0u;
                     p_ptCtx->uLastDigVal = 0u;
 
-                    l_eRes = e_eCU_CRCD_RES_OK;
+                    l_eRes = e_eDSP_CRCD_RES_OK;
                 }
 			}
 		}
@@ -277,7 +277,7 @@ e_eCU_CRCD_RES eCU_CRCD_GetDigestVal(t_eCU_CRCD_Ctx* const p_ptCtx, uint32_t* co
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eCU_CRCD_IsStatusStillCoherent(const t_eCU_CRCD_Ctx* p_ptCtx)
+static bool_t eDSP_CRCD_IsStatusStillCoherent(const t_eDSP_CRCD_Ctx* p_ptCtx)
 {
     bool_t l_eRes;
 

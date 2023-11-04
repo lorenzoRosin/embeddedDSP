@@ -1,5 +1,5 @@
 /**
- * @file       eCU_BSTFTST.h
+ * @file       eDSP_BSTFTST.h
  *
  * @brief      Byte stuffer test
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_BSTFTST_H
-#define ECU_BSTFTST_H
+#ifndef EDSP_BSTFTST_H
+#define EDSP_BSTFTST_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -35,7 +35,7 @@ extern "C" {
  *
  * @return      none
  */
-void eCU_BSTFTST_ExeTest(void);
+void eDSP_BSTFTST_ExeTest(void);
 
 
 
@@ -45,4 +45,4 @@ void eCU_BSTFTST_ExeTest(void);
 
 
 
-#endif /* ECU_BSTFTST_H */
+#endif /* EDSP_BSTFTST_H */

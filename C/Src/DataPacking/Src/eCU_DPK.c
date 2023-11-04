@@ -1,5 +1,5 @@
 /**
- * @file       eCU_DPK.c
+ * @file       eDSP_DPK.c
  *
  * @brief      Data pack utils
  *
@@ -10,37 +10,37 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_DPK.h"
+#include "eDSP_DPK.h"
 
 
 
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eCU_DPK_IsStatusStillCoherent(const t_eCU_DPK_Ctx* p_ptCtx);
+static bool_t eDSP_DPK_IsStatusStillCoherent(const t_eDSP_DPK_Ctx* p_ptCtx);
 
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eCU_DPK_RES eCU_DPK_InitCtx(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puMemPK, const uint32_t p_uMemPKL,
+e_eDSP_DPK_RES eDSP_DPK_InitCtx(t_eDSP_DPK_Ctx* const p_ptCtx, uint8_t* p_puMemPK, const uint32_t p_uMemPKL,
                               const bool_t p_bIsLEnd)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL ==  p_puMemPK ) )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check data validity */
 		if( p_uMemPKL <= 0u )
 		{
-			l_eRes = e_eCU_DPK_RES_BADPARAM;
+			l_eRes = e_eDSP_DPK_RES_BADPARAM;
 		}
 		else
 		{
@@ -50,61 +50,61 @@ e_eCU_DPK_RES eCU_DPK_InitCtx(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puMemPK, 
             p_ptCtx->uMemPKL = p_uMemPKL;
             p_ptCtx->uMemPKCtr = 0u;
 
-            l_eRes = e_eCU_DPK_RES_OK;
+            l_eRes = e_eDSP_DPK_RES_OK;
 		}
     }
 
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_IsInit(t_eCU_DPK_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_DPK_RES eDSP_DPK_IsInit(t_eDSP_DPK_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eCU_DPK_RES_OK;
+        l_eRes = e_eDSP_DPK_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_StartNewPack(t_eCU_DPK_Ctx* const p_ptCtx)
+e_eDSP_DPK_RES eDSP_DPK_StartNewPack(t_eDSP_DPK_Ctx* const p_ptCtx)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
                 /* Update index */
                 p_ptCtx->uMemPKCtr = 0u;
-                l_eRes = e_eCU_DPK_RES_OK;
+                l_eRes = e_eDSP_DPK_RES_OK;
             }
 		}
     }
@@ -112,35 +112,35 @@ e_eCU_DPK_RES eCU_DPK_StartNewPack(t_eCU_DPK_Ctx* const p_ptCtx)
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_GetDataReference(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t** p_ppuData, uint32_t* const p_puDataL)
+e_eDSP_DPK_RES eDSP_DPK_GetDataReference(t_eDSP_DPK_Ctx* const p_ptCtx, uint8_t** p_ppuData, uint32_t* const p_puDataL)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_ppuData ) || ( NULL == p_puDataL ) )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
                 *p_ppuData = p_ptCtx->puMemPK;
                 *p_puDataL = p_ptCtx->uMemPKCtr;
-                l_eRes = e_eCU_DPK_RES_OK;
+                l_eRes = e_eDSP_DPK_RES_OK;
             }
 		}
     }
@@ -148,34 +148,34 @@ e_eCU_DPK_RES eCU_DPK_GetDataReference(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t** p
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_GetNPushed(t_eCU_DPK_Ctx* const p_ptCtx, uint32_t* const p_puDataL)
+e_eDSP_DPK_RES eDSP_DPK_GetNPushed(t_eDSP_DPK_Ctx* const p_ptCtx, uint32_t* const p_puDataL)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puDataL ) )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
                 *p_puDataL = p_ptCtx->uMemPKCtr;
-                l_eRes = e_eCU_DPK_RES_OK;
+                l_eRes = e_eDSP_DPK_RES_OK;
             }
 		}
     }
@@ -183,43 +183,43 @@ e_eCU_DPK_RES eCU_DPK_GetNPushed(t_eCU_DPK_Ctx* const p_ptCtx, uint32_t* const p
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_PushArray(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL)
+e_eDSP_DPK_RES eDSP_DPK_PushArray(t_eDSP_DPK_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puData ) )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check data validity */
                 if( p_uDataL <= 0u )
                 {
-                    l_eRes = e_eCU_DPK_RES_BADPARAM;
+                    l_eRes = e_eDSP_DPK_RES_BADPARAM;
                 }
                 else
                 {
                     /* Check if we have memory for this */
                     if( ( p_ptCtx->uMemPKCtr + p_uDataL ) > p_ptCtx->uMemPKL )
                     {
-                        l_eRes = e_eCU_DPK_RES_OUTOFMEM;
+                        l_eRes = e_eDSP_DPK_RES_OUTOFMEM;
                     }
                     else
                     {
@@ -229,7 +229,7 @@ e_eCU_DPK_RES eCU_DPK_PushArray(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puData,
                         /* Update index */
                         p_ptCtx->uMemPKCtr += p_uDataL;
 
-                        l_eRes = e_eCU_DPK_RES_OK;
+                        l_eRes = e_eDSP_DPK_RES_OK;
                     }
                 }
 			}
@@ -239,29 +239,29 @@ e_eCU_DPK_RES eCU_DPK_PushArray(t_eCU_DPK_Ctx* const p_ptCtx, uint8_t* p_puData,
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_PushU8(t_eCU_DPK_Ctx* const p_ptCtx, const uint8_t p_uData)
+e_eDSP_DPK_RES eDSP_DPK_PushU8(t_eDSP_DPK_Ctx* const p_ptCtx, const uint8_t p_uData)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
@@ -269,7 +269,7 @@ e_eCU_DPK_RES eCU_DPK_PushU8(t_eCU_DPK_Ctx* const p_ptCtx, const uint8_t p_uData
                 if( ( p_ptCtx->uMemPKCtr + sizeof(uint8_t) ) > p_ptCtx->uMemPKL )
                 {
                     /* no free memory */
-                    l_eRes = e_eCU_DPK_RES_OUTOFMEM;
+                    l_eRes = e_eDSP_DPK_RES_OUTOFMEM;
                 }
                 else
                 {
@@ -279,7 +279,7 @@ e_eCU_DPK_RES eCU_DPK_PushU8(t_eCU_DPK_Ctx* const p_ptCtx, const uint8_t p_uData
                     /* Update index */
                     p_ptCtx->uMemPKCtr++;
 
-                    l_eRes = e_eCU_DPK_RES_OK;
+                    l_eRes = e_eDSP_DPK_RES_OK;
                 }
             }
 		}
@@ -288,29 +288,29 @@ e_eCU_DPK_RES eCU_DPK_PushU8(t_eCU_DPK_Ctx* const p_ptCtx, const uint8_t p_uData
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_PushU16(t_eCU_DPK_Ctx* const p_ptCtx, const uint16_t p_uData)
+e_eDSP_DPK_RES eDSP_DPK_PushU16(t_eDSP_DPK_Ctx* const p_ptCtx, const uint16_t p_uData)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
@@ -318,7 +318,7 @@ e_eCU_DPK_RES eCU_DPK_PushU16(t_eCU_DPK_Ctx* const p_ptCtx, const uint16_t p_uDa
                 if( ( p_ptCtx->uMemPKCtr + sizeof(uint16_t) ) > p_ptCtx->uMemPKL )
                 {
                     /* no free memory */
-                    l_eRes = e_eCU_DPK_RES_OUTOFMEM;
+                    l_eRes = e_eDSP_DPK_RES_OUTOFMEM;
                 }
                 else
                 {
@@ -339,7 +339,7 @@ e_eCU_DPK_RES eCU_DPK_PushU16(t_eCU_DPK_Ctx* const p_ptCtx, const uint16_t p_uDa
                         p_ptCtx->uMemPKCtr++;
                     }
 
-                    l_eRes = e_eCU_DPK_RES_OK;
+                    l_eRes = e_eDSP_DPK_RES_OK;
                 }
             }
 		}
@@ -348,29 +348,29 @@ e_eCU_DPK_RES eCU_DPK_PushU16(t_eCU_DPK_Ctx* const p_ptCtx, const uint16_t p_uDa
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uData)
+e_eDSP_DPK_RES eDSP_DPK_PushU32(t_eDSP_DPK_Ctx* const p_ptCtx, const uint32_t p_uData)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
@@ -378,7 +378,7 @@ e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uDa
                 if( ( p_ptCtx->uMemPKCtr + sizeof(uint32_t) ) > p_ptCtx->uMemPKL )
                 {
                     /* no free memory */
-                    l_eRes = e_eCU_DPK_RES_OUTOFMEM;
+                    l_eRes = e_eDSP_DPK_RES_OUTOFMEM;
                 }
                 else
                 {
@@ -407,7 +407,7 @@ e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uDa
                         p_ptCtx->uMemPKCtr++;
                     }
 
-                    l_eRes = e_eCU_DPK_RES_OK;
+                    l_eRes = e_eDSP_DPK_RES_OK;
                 }
             }
 		}
@@ -416,29 +416,29 @@ e_eCU_DPK_RES eCU_DPK_PushU32(t_eCU_DPK_Ctx* const p_ptCtx, const uint32_t p_uDa
 	return l_eRes;
 }
 
-e_eCU_DPK_RES eCU_DPK_PushU64(t_eCU_DPK_Ctx* const p_ptCtx, const uint64_t p_uData)
+e_eDSP_DPK_RES eDSP_DPK_PushU64(t_eDSP_DPK_Ctx* const p_ptCtx, const uint64_t p_uData)
 {
 	/* Local variable */
-	e_eCU_DPK_RES l_eRes;
+	e_eDSP_DPK_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_DPK_RES_BADPOINTER;
+		l_eRes = e_eDSP_DPK_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_DPK_RES_NOINITLIB;
+			l_eRes = e_eDSP_DPK_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check internal status validity */
-            if( false == eCU_DPK_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DPK_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_DPK_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DPK_RES_CORRUPTCTX;
             }
             else
             {
@@ -446,7 +446,7 @@ e_eCU_DPK_RES eCU_DPK_PushU64(t_eCU_DPK_Ctx* const p_ptCtx, const uint64_t p_uDa
                 if( ( p_ptCtx->uMemPKCtr + sizeof(uint64_t) ) > p_ptCtx->uMemPKL )
                 {
                     /* no free memory */
-                    l_eRes = e_eCU_DPK_RES_OUTOFMEM;
+                    l_eRes = e_eDSP_DPK_RES_OUTOFMEM;
                 }
                 else
                 {
@@ -491,7 +491,7 @@ e_eCU_DPK_RES eCU_DPK_PushU64(t_eCU_DPK_Ctx* const p_ptCtx, const uint64_t p_uDa
                         p_ptCtx->uMemPKCtr++;
                     }
 
-                    l_eRes = e_eCU_DPK_RES_OK;
+                    l_eRes = e_eDSP_DPK_RES_OK;
                 }
             }
 		}
@@ -505,7 +505,7 @@ e_eCU_DPK_RES eCU_DPK_PushU64(t_eCU_DPK_Ctx* const p_ptCtx, const uint64_t p_uDa
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eCU_DPK_IsStatusStillCoherent(const t_eCU_DPK_Ctx* p_ptCtx)
+static bool_t eDSP_DPK_IsStatusStillCoherent(const t_eDSP_DPK_Ctx* p_ptCtx)
 {
     bool_t l_eRes;
 

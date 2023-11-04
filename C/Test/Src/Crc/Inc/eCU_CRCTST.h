@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CRCTST.h
+ * @file       eDSP_CRCTST.h
  *
  * @brief      CRC test
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_CRCTST_H
-#define ECU_CRCTST_H
+#ifndef EDSP_CRCTST_H
+#define EDSP_CRCTST_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -35,7 +35,7 @@ extern "C" {
  *
  * @return      none
  */
-void eCU_CRCTST_ExeTest(void);
+void eDSP_CRCTST_ExeTest(void);
 
 
 
@@ -45,4 +45,4 @@ void eCU_CRCTST_ExeTest(void);
 
 
 
-#endif /* ECU_CRCTST_H */
+#endif /* EDSP_CRCTST_H */

@@ -1074,7 +1074,7 @@
                 </option>
                 <option>
                     <name>IarchiveOutput</name>
-                    <state>C:\Project\eCU\C\Prj\IAR\Library\Exe\LibEcu.a</state>
+                    <state>C:\Project\eDSP\C\Prj\IAR\Library\Exe\LibEdsp.a</state>
                 </option>
             </data>
         </settings>
@@ -1089,25 +1089,25 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eCU_BSTF.h</name>
+                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BSTF.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eCU_BSTFPRV.h</name>
+                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BSTFPRV.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eCU_BUNSTF.h</name>
+                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BUNSTF.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eCU_BUNSTFPRV.h</name>
+                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BUNSTFPRV.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Src\eCU_BSTF.c</name>
+                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Src\eDSP_BSTF.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Src\eCU_BUNSTF.c</name>
+                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Src\eDSP_BUNSTF.c</name>
             </file>
         </group>
     </group>
@@ -1116,19 +1116,19 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Inc\eCU_CRC.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Crc\Inc\eDSP_CRC.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Inc\eCU_CRCD.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Crc\Inc\eDSP_CRCD.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Src\eCU_CRC.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Crc\Src\eDSP_CRC.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Src\eCU_CRCD.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Crc\Src\eDSP_CRCD.c</name>
             </file>
         </group>
     </group>
@@ -1137,19 +1137,19 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Inc\eCU_DPK.h</name>
+                <name>$PROJ_DIR$\..\..\Src\DataPacking\Inc\eDSP_DPK.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Inc\eCU_DUNPK.h</name>
+                <name>$PROJ_DIR$\..\..\Src\DataPacking\Inc\eDSP_DUNPK.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eCU_DPK.c</name>
+                <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eDSP_DPK.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eCU_DUNPK.c</name>
+                <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eDSP_DUNPK.c</name>
             </file>
         </group>
     </group>
@@ -1158,20 +1158,20 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Queue\Inc\eCU_CIRQ.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Queue\Inc\eDSP_CIRQ.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Queue\Src\eCU_CIRQ.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Queue\Src\eDSP_CIRQ.c</name>
             </file>
         </group>
     </group>
     <file>
-        <name>$PROJ_DIR$\..\..\Src\eCU_STANDARDTYPE.h</name>
+        <name>$PROJ_DIR$\..\..\Src\eDSP_STANDARDTYPE.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\..\..\Src\eCU_TYPE.h</name>
+        <name>$PROJ_DIR$\..\..\Src\eDSP_TYPE.h</name>
     </file>
 </project>

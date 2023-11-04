@@ -1,5 +1,5 @@
 /**
- * @file       eCU_DPKDUNPKTST.h
+ * @file       eDSP_DPKDUNPKTST.h
  *
  * @brief      Data pack and unpack test
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_DPKDUNPKTST_H
-#define ECU_DPKDUNPKTST_H
+#ifndef EDSP_DPKDUNPKTST_H
+#define EDSP_DPKDUNPKTST_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -35,7 +35,7 @@ extern "C" {
  *
  * @return      none
  */
-void eCU_DPKDUNPKTST_ExeTest(void);
+void eDSP_DPKDUNPKTST_ExeTest(void);
 
 
 
@@ -45,4 +45,4 @@ void eCU_DPKDUNPKTST_ExeTest(void);
 
 
 
-#endif /* ECU_DPKDUNPKTST_H */
+#endif /* EDSP_DPKDUNPKTST_H */

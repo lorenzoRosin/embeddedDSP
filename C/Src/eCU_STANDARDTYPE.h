@@ -1,14 +1,14 @@
 /**
- * @file       eCU_STANDARDTYPE.h
+ * @file       eDSP_STANDARDTYPE.h
  *
- * @brief      Ecu standard type header
+ * @brief      Edsp standard type header
  *
  * @author     Lorenzo Rosin
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_STANDARDTYPE_H
-#define ECU_STANDARDTYPE_H
+#ifndef EDSP_STANDARDTYPE_H
+#define EDSP_STANDARDTYPE_H
 
 
 
@@ -70,4 +70,4 @@ extern "C" {
 
 
 
-#endif /* ECU_STANDARDTYPE_H */
+#endif /* EDSP_STANDARDTYPE_H */

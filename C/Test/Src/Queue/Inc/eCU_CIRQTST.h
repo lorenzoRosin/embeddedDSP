@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CIRQTST.h
+ * @file       eDSP_CIRQTST.h
  *
  * @brief      Circular queue test
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef ECU_CIRQTST_H
-#define ECU_CIRQTST_H
+#ifndef EDSP_CIRQTST_H
+#define EDSP_CIRQTST_H
 
 
 
@@ -21,7 +21,7 @@ extern "C" {
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_TYPE.h"
+#include "eDSP_TYPE.h"
 
 
 
@@ -35,7 +35,7 @@ extern "C" {
  *
  * @return      none
  */
-void eCU_CIRQTST_ExeTest(void);
+void eDSP_CIRQTST_ExeTest(void);
 
 
 
@@ -45,4 +45,4 @@ void eCU_CIRQTST_ExeTest(void);
 
 
 
-#endif /* ECU_CIRQTST_H */
+#endif /* EDSP_CIRQTST_H */

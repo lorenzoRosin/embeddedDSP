@@ -1,5 +1,5 @@
 /**
- * @file       eCU_CIRQ.c
+ * @file       eDSP_CIRQ.c
  *
  * @brief      Circular Queue utils
  *
@@ -10,37 +10,37 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eCU_CIRQ.h"
+#include "eDSP_CIRQ.h"
 
 
 
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eCU_CIRQ_IsStatusStillCoherent(const t_eCU_CIRQ_Ctx* p_ptCtx);
-static uint32_t eCU_CIRQ_GetoccupiedIndex(const t_eCU_CIRQ_Ctx* p_ptCtx);
+static bool_t eDSP_CIRQ_IsStatusStillCoherent(const t_eDSP_CIRQ_Ctx* p_ptCtx);
+static uint32_t eDSP_CIRQ_GetoccupiedIndex(const t_eDSP_CIRQ_Ctx* p_ptCtx);
 
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eCU_CIRQ_RES eCU_CIRQ_InitCtx(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puBuff, const uint32_t p_uBuffL)
+e_eDSP_CIRQ_RES eDSP_CIRQ_InitCtx(t_eDSP_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puBuff, const uint32_t p_uBuffL)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL ==  p_puBuff ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check data validity */
 		if( p_uBuffL <= 0u )
 		{
-			l_eRes = e_eCU_CIRQ_RES_BADPARAM;
+			l_eRes = e_eDSP_CIRQ_RES_BADPARAM;
 		}
 		else
 		{
@@ -51,55 +51,55 @@ e_eCU_CIRQ_RES eCU_CIRQ_InitCtx(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puBuff
 			p_ptCtx->uBuffUsedL = 0u;
 			p_ptCtx->uBuffFreeIdx = 0u;
 
-			l_eRes = e_eCU_CIRQ_RES_OK;
+			l_eRes = e_eDSP_CIRQ_RES_OK;
 		}
     }
 
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_IsInit(t_eCU_CIRQ_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_CIRQ_RES eDSP_CIRQ_IsInit(t_eDSP_CIRQ_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eCU_CIRQ_RES_OK;
+        l_eRes = e_eDSP_CIRQ_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_Reset(t_eCU_CIRQ_Ctx* const p_ptCtx)
+e_eDSP_CIRQ_RES eDSP_CIRQ_Reset(t_eDSP_CIRQ_Ctx* const p_ptCtx)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eCU_CIRQ_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CIRQ_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CIRQ_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CIRQ_RES_CORRUPTCTX;
             }
             else
             {
@@ -107,7 +107,7 @@ e_eCU_CIRQ_RES eCU_CIRQ_Reset(t_eCU_CIRQ_Ctx* const p_ptCtx)
                 p_ptCtx->uBuffUsedL = 0u;
                 p_ptCtx->uBuffFreeIdx = 0u;
 
-                l_eRes = e_eCU_CIRQ_RES_OK;
+                l_eRes = e_eDSP_CIRQ_RES_OK;
             }
 		}
     }
@@ -115,34 +115,34 @@ e_eCU_CIRQ_RES eCU_CIRQ_Reset(t_eCU_CIRQ_Ctx* const p_ptCtx)
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_GetFreeSapce(t_eCU_CIRQ_Ctx* const p_ptCtx, uint32_t* const p_puFreeSpace)
+e_eDSP_CIRQ_RES eDSP_CIRQ_GetFreeSapce(t_eDSP_CIRQ_Ctx* const p_ptCtx, uint32_t* const p_puFreeSpace)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puFreeSpace ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eCU_CIRQ_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CIRQ_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CIRQ_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CIRQ_RES_CORRUPTCTX;
             }
 			else
 			{
 				*p_puFreeSpace = p_ptCtx->uBuffL - p_ptCtx->uBuffUsedL;
-				l_eRes = e_eCU_CIRQ_RES_OK;
+				l_eRes = e_eDSP_CIRQ_RES_OK;
 			}
 		}
     }
@@ -150,34 +150,34 @@ e_eCU_CIRQ_RES eCU_CIRQ_GetFreeSapce(t_eCU_CIRQ_Ctx* const p_ptCtx, uint32_t* co
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_GetOccupiedSapce(t_eCU_CIRQ_Ctx* const p_ptCtx, uint32_t* const p_puUsedSpace)
+e_eDSP_CIRQ_RES eDSP_CIRQ_GetOccupiedSapce(t_eDSP_CIRQ_Ctx* const p_ptCtx, uint32_t* const p_puUsedSpace)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puUsedSpace ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eCU_CIRQ_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CIRQ_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CIRQ_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CIRQ_RES_CORRUPTCTX;
             }
 			else
 			{
 				*p_puUsedSpace = p_ptCtx->uBuffUsedL;
-				l_eRes = e_eCU_CIRQ_RES_OK;
+				l_eRes = e_eDSP_CIRQ_RES_OK;
 			}
 		}
     }
@@ -185,10 +185,10 @@ e_eCU_CIRQ_RES eCU_CIRQ_GetOccupiedSapce(t_eCU_CIRQ_Ctx* const p_ptCtx, uint32_t
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_InsertData(t_eCU_CIRQ_Ctx* const p_ptCtx, const uint8_t* p_puData, const uint32_t p_uDataL)
+e_eDSP_CIRQ_RES eDSP_CIRQ_InsertData(t_eDSP_CIRQ_Ctx* const p_ptCtx, const uint8_t* p_puData, const uint32_t p_uDataL)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 	uint32_t l_uFreeSpace;
 	uint32_t l_uFirstLen;
 	uint32_t l_uSecondLen;
@@ -196,28 +196,28 @@ e_eCU_CIRQ_RES eCU_CIRQ_InsertData(t_eCU_CIRQ_Ctx* const p_ptCtx, const uint8_t*
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puData ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eCU_CIRQ_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CIRQ_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CIRQ_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CIRQ_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check data validity */
                 if( p_uDataL <= 0u )
                 {
-                    l_eRes = e_eCU_CIRQ_RES_BADPARAM;
+                    l_eRes = e_eDSP_CIRQ_RES_BADPARAM;
                 }
                 else
                 {
@@ -225,7 +225,7 @@ e_eCU_CIRQ_RES eCU_CIRQ_InsertData(t_eCU_CIRQ_Ctx* const p_ptCtx, const uint8_t*
                     if( p_uDataL > l_uFreeSpace )
                     {
                         /* No memory avaiable */
-                        l_eRes = e_eCU_CIRQ_RES_FULL;
+                        l_eRes = e_eDSP_CIRQ_RES_FULL;
                     }
                     else
                     {
@@ -258,7 +258,7 @@ e_eCU_CIRQ_RES eCU_CIRQ_InsertData(t_eCU_CIRQ_Ctx* const p_ptCtx, const uint8_t*
                         }
 
                         p_ptCtx->uBuffUsedL += p_uDataL;
-                        l_eRes = e_eCU_CIRQ_RES_OK;
+                        l_eRes = e_eDSP_CIRQ_RES_OK;
                     }
                 }
 			}
@@ -268,10 +268,10 @@ e_eCU_CIRQ_RES eCU_CIRQ_InsertData(t_eCU_CIRQ_Ctx* const p_ptCtx, const uint8_t*
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_RetriveData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL)
+e_eDSP_CIRQ_RES eDSP_CIRQ_RetriveData(t_eDSP_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 	uint32_t l_uFirstLen;
 	uint32_t l_uSecondLen;
     uint32_t l_uMemPOccIdx;
@@ -279,40 +279,40 @@ e_eCU_CIRQ_RES eCU_CIRQ_RetriveData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_pu
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puData ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eCU_CIRQ_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CIRQ_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CIRQ_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CIRQ_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check data validity an queue integrity */
                 if( p_uDataL <= 0u )
                 {
-                    l_eRes = e_eCU_CIRQ_RES_BADPARAM;
+                    l_eRes = e_eDSP_CIRQ_RES_BADPARAM;
                 }
                 else
                 {
                     if( p_uDataL > p_ptCtx->uBuffUsedL )
                     {
                         /* No enoght data in the queue */
-                        l_eRes = e_eCU_CIRQ_RES_EMPTY;
+                        l_eRes = e_eDSP_CIRQ_RES_EMPTY;
                     }
                     else
                     {
                         /* Retrive occupied index */
-                        l_uMemPOccIdx = eCU_CIRQ_GetoccupiedIndex(p_ptCtx);
+                        l_uMemPOccIdx = eDSP_CIRQ_GetoccupiedIndex(p_ptCtx);
 
                         /* Can retrive data */
                         if( ( p_uDataL +  l_uMemPOccIdx ) <= p_ptCtx->uBuffL )
@@ -335,7 +335,7 @@ e_eCU_CIRQ_RES eCU_CIRQ_RetriveData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_pu
                         }
 
                         p_ptCtx->uBuffUsedL -= p_uDataL;
-                        l_eRes = e_eCU_CIRQ_RES_OK;
+                        l_eRes = e_eDSP_CIRQ_RES_OK;
                     }
                 }
 			}
@@ -345,10 +345,10 @@ e_eCU_CIRQ_RES eCU_CIRQ_RetriveData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_pu
 	return l_eRes;
 }
 
-e_eCU_CIRQ_RES eCU_CIRQ_PeekData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL)
+e_eDSP_CIRQ_RES eDSP_CIRQ_PeekData(t_eDSP_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puData, const uint32_t p_uDataL)
 {
 	/* Local variable */
-	e_eCU_CIRQ_RES l_eRes;
+	e_eDSP_CIRQ_RES l_eRes;
 	uint32_t l_uFirstLen;
 	uint32_t l_uSecondLen;
     uint32_t l_uMemPOccIdx;
@@ -356,40 +356,40 @@ e_eCU_CIRQ_RES eCU_CIRQ_PeekData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puDat
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_puData ) )
 	{
-		l_eRes = e_eCU_CIRQ_RES_BADPOINTER;
+		l_eRes = e_eDSP_CIRQ_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eCU_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eCU_CIRQ_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_CIRQ_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eCU_CIRQ_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_CIRQ_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check data validity an queue integrity */
                 if( p_uDataL <= 0u )
                 {
-                    l_eRes = e_eCU_CIRQ_RES_BADPARAM;
+                    l_eRes = e_eDSP_CIRQ_RES_BADPARAM;
                 }
                 else
                 {
                     if( p_uDataL > p_ptCtx->uBuffUsedL )
                     {
                         /* No enoght data in the queue */
-                        l_eRes = e_eCU_CIRQ_RES_EMPTY;
+                        l_eRes = e_eDSP_CIRQ_RES_EMPTY;
                     }
                     else
                     {
                         /* Retrive occupied index */
-                        l_uMemPOccIdx = eCU_CIRQ_GetoccupiedIndex(p_ptCtx);
+                        l_uMemPOccIdx = eDSP_CIRQ_GetoccupiedIndex(p_ptCtx);
 
                         /* Can retrive data */
                         if( ( p_uDataL +  l_uMemPOccIdx ) <= p_ptCtx->uBuffL )
@@ -411,7 +411,7 @@ e_eCU_CIRQ_RES eCU_CIRQ_PeekData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puDat
                             (void)memcpy(&p_puData[l_uFirstLen], &p_ptCtx->puBuff[l_uMemPOccIdx], l_uSecondLen);
                         }
 
-                        l_eRes = e_eCU_CIRQ_RES_OK;
+                        l_eRes = e_eDSP_CIRQ_RES_OK;
                     }
                 }
 			}
@@ -426,7 +426,7 @@ e_eCU_CIRQ_RES eCU_CIRQ_PeekData(t_eCU_CIRQ_Ctx* const p_ptCtx, uint8_t* p_puDat
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eCU_CIRQ_IsStatusStillCoherent(const t_eCU_CIRQ_Ctx* p_ptCtx)
+static bool_t eDSP_CIRQ_IsStatusStillCoherent(const t_eDSP_CIRQ_Ctx* p_ptCtx)
 {
     bool_t l_eRes;
 
@@ -459,7 +459,7 @@ static bool_t eCU_CIRQ_IsStatusStillCoherent(const t_eCU_CIRQ_Ctx* p_ptCtx)
     return l_eRes;
 }
 
-static uint32_t eCU_CIRQ_GetoccupiedIndex(const t_eCU_CIRQ_Ctx* p_ptCtx)
+static uint32_t eDSP_CIRQ_GetoccupiedIndex(const t_eDSP_CIRQ_Ctx* p_ptCtx)
 {
     uint32_t l_uOccIndx;
 
