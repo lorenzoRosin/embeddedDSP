@@ -356,6 +356,8 @@
                     <state>$PROJ_DIR$\..\..\Src\DataPacking\Src</state>
                     <state>$PROJ_DIR$\..\..\Src\Queue\Inc</state>
                     <state>$PROJ_DIR$\..\..\Src\Queue\Src</state>
+                    <state>$PROJ_DIR$\..\..\Src\Math\Inc</state>
+                    <state>$PROJ_DIR$\..\..\Src\Math\Src</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1150,6 +1152,21 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eDSP_DUNPK.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
+        <name>Math</name>
+        <group>
+            <name>Inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Math\Inc\eDSP_S2DPU32LINEAR.h</name>
+            </file>
+        </group>
+        <group>
+            <name>Src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_S2DPU32LINEAR.c</name>
             </file>
         </group>
     </group>

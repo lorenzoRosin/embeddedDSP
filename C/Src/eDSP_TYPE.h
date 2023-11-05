@@ -28,9 +28,9 @@ extern "C" {
 /***********************************************************************************************************************
  *      DEFINES
  **********************************************************************************************************************/
-#define EDSP_SOF                                                                                    ( ( uint8_t ) 0xA1u )
-#define EDSP_EOF                                                                                    ( ( uint8_t ) 0xA2u )
-#define EDSP_ESC                                                                                    ( ( uint8_t ) 0xA3u )
+#define EDSP_SOF                                                                                   ( ( uint8_t ) 0xA1u )
+#define EDSP_EOF                                                                                   ( ( uint8_t ) 0xA2u )
+#define EDSP_ESC                                                                                   ( ( uint8_t ) 0xA3u )
 
 
 
