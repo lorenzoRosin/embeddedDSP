@@ -40,9 +40,15 @@ extern "C" {
 
 typedef struct
 {
-    uint32_t    uX;
-    uint32_t    uY;
-}t_eDSP_TYPE_2DP32U;
+    int32_t    uX;
+    int32_t    uY;
+}t_eDSP_TYPE_2DPI32;
+
+typedef struct
+{
+    int64_t    uX;
+    int64_t    uY;
+}t_eDSP_TYPE_2DPI64;
 
 
 #ifdef __cplusplus
