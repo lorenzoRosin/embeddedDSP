@@ -358,6 +358,8 @@
                     <state>$PROJ_DIR$\..\..\Src\Queue\Src</state>
                     <state>$PROJ_DIR$\..\..\Src\Math\Inc</state>
                     <state>$PROJ_DIR$\..\..\Src\Math\Src</state>
+                    <state>$PROJ_DIR$\..\..\Src\Utils\Inc</state>
+                    <state>$PROJ_DIR$\..\..\Src\Utils\Src</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1182,6 +1184,21 @@
             <name>Src</name>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Queue\Src\eDSP_CIRQ.c</name>
+            </file>
+        </group>
+    </group>
+    <group>
+        <name>Utils</name>
+        <group>
+            <name>Inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Utils\Inc\eDSP_MaxCheck.h</name>
+            </file>
+        </group>
+        <group>
+            <name>Src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Utils\Src\eDSP_MaxCheck.c</name>
             </file>
         </group>
     </group>

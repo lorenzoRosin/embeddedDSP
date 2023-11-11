@@ -1522,6 +1522,21 @@
             </file>
         </group>
     </group>
+    <group>
+        <name>Utils</name>
+        <group>
+            <name>Inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Utils\Inc\eDSP_MaxCheck.h</name>
+            </file>
+        </group>
+        <group>
+            <name>Src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Utils\Src\eDSP_MaxCheck.c</name>
+            </file>
+        </group>
+    </group>
     <file>
         <name>$PROJ_DIR$\..\..\Src\eDSP_STANDARDTYPE.h</name>
     </file>
