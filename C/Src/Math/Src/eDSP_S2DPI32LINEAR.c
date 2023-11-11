@@ -71,7 +71,7 @@ e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_Linearize( const t_eDSP_TYPE_2DPI32 
 			   we need to be carefull because we are not using floating point, and we must reteing as much precision as
 			   possible */
 
-			*p_puY =  ( ( l_tPSecond.uY - l_tPFirst.uY ) * ( l_tPSecond.uY - l_tPFirst.uY ) ) / ( l_tPSecond.uX - l_tPFirst.uX ) + ;
+			*p_puY =  ( ( l_tPSecond.uY - l_tPFirst.uY ) * ( l_tPSecond.uY - l_tPFirst.uY ) ) / ( l_tPSecond.uX - l_tPFirst.uX ) + 10;
 		}
     }
 

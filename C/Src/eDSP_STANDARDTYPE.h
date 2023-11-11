@@ -85,7 +85,7 @@ extern "C" {
 #endif
 
 #ifndef MIN_INT64VAL
-  #define MIN_INT64VAL                                                              ( ( int64_t ) −9223372036854775808 )
+  #define MIN_INT64VAL                                                              ( ( int64_t ) -9223372036854775808 )
 #endif
 
 #ifndef MAX_INT32VAL
@@ -93,7 +93,7 @@ extern "C" {
 #endif
 
 #ifndef MIN_INT32VAL
-  #define MIN_INT32VAL                                                                       ( ( int32_t ) −2147483648 )
+  #define MIN_INT32VAL                                                                       ( ( int32_t ) -2147483648 )
 #endif
 
 #ifdef __cplusplus
