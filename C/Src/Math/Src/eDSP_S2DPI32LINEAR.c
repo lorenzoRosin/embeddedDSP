@@ -16,6 +16,13 @@
 
 
 /***********************************************************************************************************************
+ *  PRIVATE STATIC FUNCTION DECLARATION
+ **********************************************************************************************************************/
+static e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+
+
+
+/***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
 e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_Linearize( const t_eDSP_TYPE_2DPI32 p_tP1, const t_eDSP_TYPE_2DPI32 p_tP2,
@@ -23,6 +30,7 @@ e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_Linearize( const t_eDSP_TYPE_2DPI32 
 {
 	/* Local variable for return */
 	e_eDSP_S2DPI32LINEAR_RES l_eRes;
+	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Local variable for calculation */
 	t_eDSP_TYPE_2DPI32 l_tPFirst;
@@ -30,7 +38,8 @@ e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_Linearize( const t_eDSP_TYPE_2DPI32 
 	uint64_t l_iA;
 	uint64_t l_iB;
 	uint64_t l_iC;
-
+	uint64_t l_iAB;
+	uint64_t l_iABC;
 	/* Check pointer validity */
 	if( NULL == p_puY )
 	{
@@ -46,9 +55,6 @@ e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_Linearize( const t_eDSP_TYPE_2DPI32 
 		}
 		else
 		{
-			/* No more problem */
-			l_eRes = e_eDSP_S2DPI32LINEAR_RES_OK;
-
 			/* Find the first point and then the second*/
 			if( p_tP1.uX <= p_tP2.uX )
 			{
@@ -68,13 +74,73 @@ e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_Linearize( const t_eDSP_TYPE_2DPI32 
 			   and so y is -> y = m*x + q = m * x + Yfirst - m * Xfirst = m * ( x - Xfirst ) + Yfirst
 			                    = ( ( Ysecond - Yfirst )  * ( x - Xfirst ) ) / ( Xsecond - Xfirst ) + Yfirst
 								= ( ( A )  * ( B ) ) / ( C ) + Yfirst
-			   we need to be carefull because we are not using floating point, and we must reteing as much precision as
+			   we need to be carefull because we are not using floating point, and we must retain as much precision as
 			   possible */
 
-			*p_puY =  ( ( l_tPSecond.uY - l_tPFirst.uY ) * ( l_tPSecond.uY - l_tPFirst.uY ) ) / ( l_tPSecond.uX - l_tPFirst.uX ) + 10;
+			/* Calculate single addend */
+			l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uY, l_tPFirst.uY);
+			l_eRes = eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
+
+			if( e_eDSP_S2DPI32LINEAR_RES_OK == l_eRes )
+			{
+				l_iA = l_tPSecond.uY - l_tPFirst.uY;
+
+				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_uX, l_tPFirst.uX);
+				l_eRes = eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
+
+				if( e_eDSP_S2DPI32LINEAR_RES_OK == l_eRes )
+				{
+					l_iB = p_uX - l_tPFirst.uX;
+
+					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uX , l_tPFirst.uX);
+					l_eRes = eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
+
+					if( e_eDSP_S2DPI32LINEAR_RES_OK == l_eRes )
+					{
+						l_iC = l_tPSecond.uX - l_tPFirst.uX;
+
+						l_eMaxRes = eDSP_MAXCHECK_MOLTIPI64Check(l_iA, l_iB);
+						l_eRes = eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
+
+						if( e_eDSP_S2DPI32LINEAR_RES_OK == l_eRes )
+						{
+							l_iAB = l_iA * l_iB;
+							l_iABC = l_iAB / l_iC;
+
+							l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iABC, l_tPFirst.uY);
+							l_eRes = eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
+
+							if( e_eDSP_S2DPI32LINEAR_RES_OK == l_eRes )
+							{
+								*p_puY = l_iABC + l_tPFirst.uY;
+							}
+						}
+					}
+				}
+			}
 		}
     }
 
 	return l_eRes;
 }
 
+
+
+/***********************************************************************************************************************
+ *  PRIVATE FUNCTION
+ **********************************************************************************************************************/
+static e_eDSP_S2DPI32LINEAR_RES eDSP_S2DPI32LINEAR_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+{
+	e_eDSP_S2DPI32LINEAR_RES l_eRet;
+
+	if( e_eDSP_MAXCHECK_RES_OK == p_tMaxRet )
+	{
+		l_eRet = e_eDSP_S2DPI32LINEAR_RES_OK;
+	}
+	else
+	{
+		l_eRet = e_eDSP_S2DPI32LINEAR_RES_OUTLIMIT;
+	}
+
+	return l_eRet;
+}
