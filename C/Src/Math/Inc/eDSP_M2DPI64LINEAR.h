@@ -33,14 +33,52 @@ typedef enum
     e_eDSP_M2DPI64LINEAR_RES_OK = 0,
     e_eDSP_M2DPI64LINEAR_RES_BADPOINTER,
     e_eDSP_M2DPI64LINEAR_RES_BADPARAM,
-    e_eDSP_M2DPI64LINEAR_RES_OUTLIMIT
+    e_eDSP_M2DPI64LINEAR_RES_OUTLIMIT,
+    e_eDSP_M2DPI64LINEAR_RES_CORRUPTCTX,
+    e_eDSP_M2DPI64LINEAR_RES_NOINITLIB
 }e_eDSP_M2DPI64LINEAR_RES;
+
+typedef struct
+{
+    uint32_t uNumPoint;
+    t_eDSP_TYPE_2DPI64* ptPointArray;
+}t_eDSP_M2DPI64LINEAR_PointSeries;
+
+typedef struct
+{
+    bool_t bIsInit;
+    t_eDSP_M2DPI64LINEAR_PointSeries tPoinSeries;
+}t_eDSP_M2DPI64LINEAR_Ctx;
 
 
 
 /***********************************************************************************************************************
  * GLOBAL PROTOTYPES
  **********************************************************************************************************************/
+/**
+ * @brief       Initialize the CRC32 digester context ( use as base p_uUseed 0xFFFFFFFFu )
+ *
+ * @param[in]   p_ptCtx       - Crc digester context
+ * @param[in]   p_fCrc        - Pointer to a CRC 32 p_uUseed callback function, that will be used to calculate the CRC32
+ * @param[in]   p_ptFctx      - Custom context passed to the callback function p_fCrc
+ *
+ * @return      e_eDSP_CRCD_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK             - Crc digester initialized successfully
+ */
+e_eDSP_CRCD_RES eDSP_CRCD_InitCtx(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx, f_eDSP_CRCD_CrcCb p_fCrc,
+                                t_eDSP_CRCD_CrcCtx* const p_ptFctx);
+
+/**
+ * @brief       Check if the lib is initialized
+ *
+ * @param[in]   p_ptCtx         - Crc digester context
+ * @param[out]  p_pbIsInit      - Pointer to a bool_t variable that will be filled with true if the lib is initialized
+ *
+ * @return      e_eDSP_CRCD_RES_BADPOINTER    - In case of bad pointer passed to the function
+ *              e_eDSP_CRCD_RES_OK            - Operation ended correctly
+ */
+e_eDSP_CRCD_RES eDSP_CRCD_IsInit(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
+
 /**
  * @brief       Given two point, calculate the Y value of the rect passing in the provided two point, given an X value
  *
@@ -55,8 +93,8 @@ typedef enum
  *                                                    - of +-90 degree
  *              e_eDSP_M2DPI64LINEAR_RES_OK           - Operation ended correctly
  */
-e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( const t_eDSP_TYPE_2DPI64 p_tP1, const t_eDSP_TYPE_2DPI64 p_tP2,
-                                                       const int64_t p_uX, int64_t* const p_puY );
+e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx, const t_eDSP_TYPE_2DPI64 p_tP1,
+                                                       const t_eDSP_TYPE_2DPI64 p_tP2, const int64_t p_uX, int64_t* const p_puY );
 
 
 

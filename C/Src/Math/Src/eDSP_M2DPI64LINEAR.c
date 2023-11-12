@@ -19,6 +19,7 @@
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
+static bool_t eFSS_DB_IsStatusStillCoherent(t_eFSS_DB_Ctx* const p_ptCtx);
 static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
@@ -130,6 +131,41 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( const t_eDSP_TYPE_2DPI64 
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
+static bool_t eFSS_DB_IsStatusStillCoherent(t_eFSS_DB_Ctx* const p_ptCtx)
+{
+    /* Return local var */
+    bool_t l_eRes;
+    e_eFSS_DBC_RES l_eDBCRes;
+
+    /* Local variable for storage */
+    t_eFSS_DBC_StorBuf l_tBuff;
+    uint32_t l_uTotPage;
+
+    /* Get usable pages and buffer length so we can check database default value validity */
+    l_uTotPage = 0u;
+    l_eDBCRes = eFSS_DBC_GetBuffNUsable(&p_ptCtx->tDbcCtx, &l_tBuff, &l_uTotPage);
+
+    if( e_eFSS_DBC_RES_OK != l_eDBCRes )
+    {
+        l_eRes = false;
+    }
+    else
+    {
+        /* Check data validity */
+        if( ( l_uTotPage <= 0u ) || ( l_tBuff.uBufL < EFSS_DB_MINPAGESIZE ) )
+        {
+            l_eRes = false;
+        }
+        else
+        {
+            /* Check validity of the passed db struct */
+            l_eRes = eFSS_DB_IsDbDefStructValid(p_ptCtx->tDB, l_uTotPage, l_tBuff.uBufL);
+        }
+    }
+
+    return l_eRes;
+}
+
 static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
 	e_eDSP_M2DPI64LINEAR_RES l_eRet;
