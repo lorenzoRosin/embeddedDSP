@@ -36,7 +36,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check( const int64_t p_iFirst, const int
 	}
 	else if( ( p_iFirst < 0 ) && ( p_iSecond < 0 ) )
 	{
-		if( p_iFirst < ( MIN_INT64VAL - p_iSecond ) )
+		if( p_iFirst < ( MAX_INT64VAL + p_iSecond ) )
 		{
 			l_eRes = e_eDSP_MAXCHECK_RES_OK;
 		}

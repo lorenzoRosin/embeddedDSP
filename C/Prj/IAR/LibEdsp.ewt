@@ -1497,13 +1497,13 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Math\Inc\eDSP_S2DPI32LINEAR.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Math\Inc\eDSP_S2DPI64LINEAR.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_S2DPI32LINEAR.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_S2DPI64LINEAR.c</name>
             </file>
         </group>
     </group>
