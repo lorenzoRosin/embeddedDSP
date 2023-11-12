@@ -19,7 +19,7 @@
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eFSS_DB_IsStatusStillCoherent(t_eFSS_DB_Ctx* const p_ptCtx);
+static bool_t eFSS_DB_IsStatusStillCoherent(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx);
 static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
@@ -27,8 +27,62 @@ static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_MaxCheckRestToS2DP(const e_eD
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( const t_eDSP_TYPE_2DPI64 p_tP1, const t_eDSP_TYPE_2DPI64 p_tP2,
-                                                       const int64_t p_uX, int64_t* const p_puY )
+e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_InitCtx(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx,
+                                                    t_eDSP_M2DPI64LINEAR_PointSeries p_tSeries)
+{
+	/* Local variable */
+	e_eDSP_M2DPI64LINEAR_RES l_eRes;
+
+	/* Check pointer validity */
+	if( ( NULL == p_ptCtx ) || ( NULL == p_puBuff ) )
+	{
+		l_eRes = e_eDSP_M2DPI64LINEAR_RES_BADPOINTER;
+	}
+	else
+	{
+        /* Check data validity */
+        if( p_uBuffL <= 0u )
+        {
+            l_eRes = e_eDSP_M2DPI64LINEAR_RES_BADPARAM;
+        }
+        else
+        {
+            /* Initialize internal status */
+            p_ptCtx->bIsInit = true;
+            p_ptCtx->puBuff = p_puBuff;
+            p_ptCtx->uBuffL = p_uBuffL;
+            p_ptCtx->uFrameL = 0u;
+            p_ptCtx->uFrameCtr = 0u;
+            p_ptCtx->eSM = e_eDSP_M2DPI64LINEARPRV_SM_NEEDSOF;
+
+            l_eRes = e_eDSP_M2DPI64LINEAR_RES_OK;
+        }
+	}
+
+	return l_eRes;
+}
+
+e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_IsInit(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+{
+	/* Local variable */
+	e_eDSP_M2DPI64LINEAR_RES l_eRes;
+
+	/* Check pointer validity */
+	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
+	{
+		l_eRes = e_eDSP_M2DPI64LINEAR_RES_BADPOINTER;
+	}
+	else
+	{
+        *p_pbIsInit = p_ptCtx->bIsInit;
+        l_eRes = e_eDSP_M2DPI64LINEAR_RES_OK;
+	}
+
+	return l_eRes;
+}
+
+e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_InitCtx(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx,
+                                                    t_eDSP_M2DPI64LINEAR_PointSeries p_tSeries)
 {
 	/* Local variable for return */
 	e_eDSP_M2DPI64LINEAR_RES l_eRes;
@@ -50,7 +104,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( const t_eDSP_TYPE_2DPI64 
 	else
 	{
 		/* Check param, we must esclude from the calculation point with the same X, escluding do equals point and
-		   point that can generate a rect angle rect */
+		   point that can generate a line angle line */
 		if( p_tP1.uX == p_tP2.uX )
 		{
 			l_eRes = e_eDSP_M2DPI64LINEAR_RES_BADPARAM;
@@ -70,7 +124,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( const t_eDSP_TYPE_2DPI64 
 			}
 
 			/* do calculation:
-			   rect definition -> y = m * x + q
+			   line definition -> y = m * x + q
 			   we can find m doing -> m = dy/dx = ( Ysecond - Yfirst ) / ( Xsecond - Xfirst )
 			   q is equals to -> q = Yfirst - m*Xfirst
 			   and so y is -> y = m*x + q = m * x + Yfirst - m * Xfirst = m * ( x - Xfirst ) + Yfirst
@@ -131,7 +185,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize( const t_eDSP_TYPE_2DPI64 
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eFSS_DB_IsStatusStillCoherent(t_eFSS_DB_Ctx* const p_ptCtx)
+static bool_t eFSS_DB_IsStatusStillCoherent(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx)
 {
     /* Return local var */
     bool_t l_eRes;

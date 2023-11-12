@@ -47,7 +47,7 @@ typedef enum
  * @return      e_eDSP_MAXCHECK_OUTLIMIT         - Operation exceed limits
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
-e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check( const int64_t p_iFirst, const int64_t p_iSecond );
+e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
 
 /**
  * @brief       Given two value check if the subtration exceed the int64_t storage area
@@ -57,7 +57,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check( const int64_t p_iFirst, const int
  * @return      e_eDSP_MAXCHECK_OUTLIMIT         - Operation exceed limits
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
-e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check( const int64_t p_iFirst, const int64_t p_iSecond );
+e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
 
 /**
  * @brief       Given two value check if the moltiplication exceed the int64_t storage area
@@ -67,7 +67,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check( const int64_t p_iFirst, const in
  * @return      e_eDSP_MAXCHECK_OUTLIMIT         - Operation exceed limits
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
-e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check( const int64_t p_iFirst, const int64_t p_iSecond );
+e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
 
 #ifdef __cplusplus
 } /* extern "C" */
