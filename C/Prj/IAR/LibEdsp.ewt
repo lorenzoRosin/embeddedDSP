@@ -1497,6 +1497,12 @@
         <group>
             <name>Inc</name>
             <file>
+                <name>$PROJ_DIR$\..\..\Src\Math\Inc\eDSP_DERIVATIVE.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Math\Inc\eDSP_INTEGRAL.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\..\Src\Math\Inc\eDSP_M2DPI64LINEAR.h</name>
             </file>
             <file>
@@ -1505,6 +1511,12 @@
         </group>
         <group>
             <name>Src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_DERIVATIVE.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_INTEGRAL.c</name>
+            </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_M2DPI64LINEAR.c</name>
             </file>
