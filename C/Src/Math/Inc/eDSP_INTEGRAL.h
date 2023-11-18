@@ -43,8 +43,8 @@ typedef struct
     bool_t bIsInit;
     bool_t bHasPrev;
     bool_t bHasCurrent;
-    uint64_t uPreviousVal;
-    uint64_t uCurrentVal;
+    int64_t uPreviousVal;
+    int64_t uCurrentVal;
     uint32_t uTimeElapsedFromCurToPre;
 }t_eDSP_INTEGRAL_Ctx;
 
@@ -92,8 +92,8 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_IsInit(t_eDSP_INTEGRAL_Ctx* const p_ptCtx, boo
  *		        e_eDSP_INTEGRAL_RES_CORRUPTCTX   - In case of an corrupted context
  *              e_eDSP_INTEGRAL_RES_OK           - Operation ended correctly
  */
-e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValue(t_eDSP_INTEGRAL_Ctx* const p_ptCtx, const int64_t p_value, 
-                                                  const uint32_t p_timeFromLast);
+e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValue(t_eDSP_INTEGRAL_Ctx* const p_ptCtx, const int64_t p_value,
+                                              const uint32_t p_timeFromLast);
 
 /**
  * @brief       Given the series of point used during the init phase, calculate the Y value of the line passing in the

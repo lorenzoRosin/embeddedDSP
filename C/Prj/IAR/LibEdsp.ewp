@@ -1088,18 +1088,54 @@
         <name>Alg</name>
         <group>
             <name>Inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Alg\Inc\eDSP_PID.h</name>
+            </file>
         </group>
         <group>
             <name>Src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Alg\Src\eDSP_PID.c</name>
+            </file>
         </group>
     </group>
     <group>
         <name>Filter</name>
         <group>
             <name>Inc</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_DECIMATORFILTER.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_HPASSFILTER.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_LPASSFILTER.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MEANFILTER.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MEDIANFILTER.h</name>
+            </file>
         </group>
         <group>
             <name>Src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_DECIMATORFILTER.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_HPASSFILTER.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_LPASSFILTER.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MEANFILTER.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MEDIANFILTER.c</name>
+            </file>
         </group>
     </group>
     <group>

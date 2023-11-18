@@ -1,5 +1,5 @@
 /**
- * @file       eDSP_INTEGRAL.h
+ * @file       eDSP_DERIVATIVE.h
  *
  * @brief      Multiple 2D point Linearization on a int64_t
  *
@@ -10,7 +10,7 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eDSP_INTEGRAL.h"
+#include "eDSP_DERIVATIVE.h"
 #include "eDSP_MaxCheck.h"
 
 
@@ -18,22 +18,23 @@
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_ptCtx);
-static e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx);
+static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InitCtx(t_eDSP_INTEGRAL_Ctx* const p_ptCtx)
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InitCtx(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx)
 {
 	/* Local variable */
-	e_eDSP_INTEGRAL_RES l_eRes;
+	e_eDSP_DERIVATIVE_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eDSP_INTEGRAL_RES_BADPOINTER;
+		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
 	}
 	else
 	{
@@ -46,62 +47,62 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InitCtx(t_eDSP_INTEGRAL_Ctx* const p_ptCtx)
 		p_ptCtx->uTimeElapsedFromCurToPre = 0u;
 
 		/* All OK */
-        l_eRes = e_eDSP_INTEGRAL_RES_OK;
+        l_eRes = e_eDSP_DERIVATIVE_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_IsInit(t_eDSP_INTEGRAL_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eDSP_INTEGRAL_RES l_eRes;
+	e_eDSP_DERIVATIVE_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eDSP_INTEGRAL_RES_BADPOINTER;
+		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eDSP_INTEGRAL_RES_OK;
+        l_eRes = e_eDSP_DERIVATIVE_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValue(t_eDSP_INTEGRAL_Ctx* const p_ptCtx, const int64_t p_value,
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_value,
                                                   const uint32_t p_timeFromLast)
 {
 	/* Local variable for return */
-	e_eDSP_INTEGRAL_RES l_eRes;
+	e_eDSP_DERIVATIVE_RES l_eRes;
 
 	/* Check pointer validity */
 	if( NULL == p_ptCtx )
 	{
-		l_eRes = e_eDSP_INTEGRAL_RES_BADPOINTER;
+		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eDSP_INTEGRAL_RES_NOINITLIB;
+			l_eRes = e_eDSP_DERIVATIVE_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eDSP_INTEGRAL_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DERIVATIVE_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eDSP_INTEGRAL_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DERIVATIVE_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check data validity */
 				if( 0u == p_timeFromLast )
 				{
-					l_eRes = e_eDSP_INTEGRAL_RES_BADPARAM;
+					l_eRes = e_eDSP_DERIVATIVE_RES_BADPARAM;
 				}
 				else
 				{
@@ -126,47 +127,47 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValue(t_eDSP_INTEGRAL_Ctx* const p_ptCtx
 	return l_eRes;
 }
 
-e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_CalcIntegral(t_eDSP_INTEGRAL_Ctx* const p_ptCtx, int64_t* const p_piIntegral)
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_CalcDerivate(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, int64_t* const p_piDerivate)
 {
 	/* Local variable for return */
-	e_eDSP_INTEGRAL_RES l_eRes;
+	e_eDSP_DERIVATIVE_RES l_eRes;
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Check pointer validity */
-	if( ( NULL == p_ptCtx ) || ( NULL == p_piIntegral ))
+	if( ( NULL == p_ptCtx ) || ( NULL == p_piDerivate ))
 	{
-		l_eRes = e_eDSP_INTEGRAL_RES_BADPOINTER;
+		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eDSP_INTEGRAL_RES_NOINITLIB;
+			l_eRes = e_eDSP_DERIVATIVE_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eDSP_INTEGRAL_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_DERIVATIVE_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eDSP_INTEGRAL_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_DERIVATIVE_RES_CORRUPTCTX;
             }
 			else
 			{
                 /* Check if we can proceed */
 				if( false == p_ptCtx->bHasPrev )
 				{
-					l_eRes = e_eDSP_INTEGRAL_RES_BADPARAM;
+					l_eRes = e_eDSP_DERIVATIVE_RES_BADPARAM;
 				}
 				else
 				{
 					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_ptCtx->uCurrentVal, p_ptCtx->uPreviousVal);
-					l_eRes = eDSP_INTEGRAL_MaxCheckRestToS2DP(l_eMaxRes);
+					l_eRes = eDSP_DERIVATIVE_MaxCheckRestToS2DP(l_eMaxRes);
 
-					if( e_eDSP_INTEGRAL_RES_OK == l_eRes )
+					if( e_eDSP_DERIVATIVE_RES_OK == l_eRes )
 					{
 						/* calculate */
-						*p_piIntegral = p_ptCtx->uPreviousVal + p_ptCtx->uCurrentVal * p_ptCtx->uTimeElapsedFromCurToPre;
+						*p_piDerivate = p_ptCtx->uCurrentVal - p_ptCtx->uPreviousVal / p_ptCtx->uTimeElapsedFromCurToPre;
 					}
 				}
 			}
@@ -181,7 +182,7 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_CalcIntegral(t_eDSP_INTEGRAL_Ctx* const p_ptCt
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_ptCtx)
+static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx)
 {
     /* Return local var */
     bool_t l_eRes;
@@ -191,17 +192,17 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
     return l_eRes;
 }
 
-static e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
-	e_eDSP_INTEGRAL_RES l_eRet;
+	e_eDSP_DERIVATIVE_RES l_eRet;
 
 	if( e_eDSP_MAXCHECK_RES_OK == p_tMaxRet )
 	{
-		l_eRet = e_eDSP_INTEGRAL_RES_OK;
+		l_eRet = e_eDSP_DERIVATIVE_RES_OK;
 	}
 	else
 	{
-		l_eRet = e_eDSP_INTEGRAL_RES_OUTLIMIT;
+		l_eRet = e_eDSP_DERIVATIVE_RES_OUTLIMIT;
 	}
 
 	return l_eRet;
