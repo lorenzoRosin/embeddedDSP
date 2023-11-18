@@ -12,7 +12,7 @@
  **********************************************************************************************************************/
 #include "eDSP_M2DPI64LINEAR.h"
 #include "eDSP_S2DPI64LINEAR.h"
-#include "eDSP_MaxCheck.h"
+#include "eDSP_MAXCHECK.h"
 
 
 

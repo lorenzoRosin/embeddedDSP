@@ -11,7 +11,7 @@
  *      INCLUDES
  **********************************************************************************************************************/
 #include "eDSP_INTEGRAL.h"
-#include "eDSP_MaxCheck.h"
+#include "eDSP_MAXCHECK.h"
 
 
 

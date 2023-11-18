@@ -1515,13 +1515,13 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Utils\Inc\eDSP_MaxCheck.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Utils\Inc\eDSP_MAXCHECK.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Utils\Src\eDSP_MaxCheck.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Utils\Src\eDSP_MAXCHECK.c</name>
             </file>
         </group>
     </group>

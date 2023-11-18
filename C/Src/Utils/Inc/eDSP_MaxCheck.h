@@ -1,5 +1,5 @@
 /**
- * @file       eDSP_MaxCheck.h
+ * @file       eDSP_MAXCHECK.h
  *
  * @brief      Check if some operation exceed storage limits
  *
@@ -68,6 +68,8 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check(const int64_t p_iFirst, const int
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
 e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
+
+
 
 #ifdef __cplusplus
 } /* extern "C" */
