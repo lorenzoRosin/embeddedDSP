@@ -348,14 +348,10 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\Src</state>
-                    <state>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc</state>
-                    <state>$PROJ_DIR$\..\..\Src\ByteStuffing\Src</state>
-                    <state>$PROJ_DIR$\..\..\Src\Crc\Inc</state>
-                    <state>$PROJ_DIR$\..\..\Src\Crc\Src</state>
-                    <state>$PROJ_DIR$\..\..\Src\DataPacking\Inc</state>
-                    <state>$PROJ_DIR$\..\..\Src\DataPacking\Src</state>
-                    <state>$PROJ_DIR$\..\..\Src\Queue\Inc</state>
-                    <state>$PROJ_DIR$\..\..\Src\Queue\Src</state>
+                    <state>$PROJ_DIR$\..\..\Src\Alg\Inc</state>
+                    <state>$PROJ_DIR$\..\..\Src\Alg\Src</state>
+                    <state>$PROJ_DIR$\..\..\Src\Filter\Inc</state>
+                    <state>$PROJ_DIR$\..\..\Src\Filter\Src</state>
                     <state>$PROJ_DIR$\..\..\Src\Math\Inc</state>
                     <state>$PROJ_DIR$\..\..\Src\Math\Src</state>
                     <state>$PROJ_DIR$\..\..\Src\Utils\Inc</state>
@@ -1089,72 +1085,21 @@
         </settings>
     </configuration>
     <group>
-        <name>ByteStuffing</name>
+        <name>Alg</name>
         <group>
             <name>Inc</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BSTF.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BSTFPRV.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BUNSTF.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Inc\eDSP_BUNSTFPRV.h</name>
-            </file>
         </group>
         <group>
             <name>Src</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Src\eDSP_BSTF.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\ByteStuffing\Src\eDSP_BUNSTF.c</name>
-            </file>
         </group>
     </group>
     <group>
-        <name>Crc</name>
+        <name>Filter</name>
         <group>
             <name>Inc</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Inc\eDSP_CRC.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Inc\eDSP_CRCD.h</name>
-            </file>
         </group>
         <group>
             <name>Src</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Src\eDSP_CRC.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\Crc\Src\eDSP_CRCD.c</name>
-            </file>
-        </group>
-    </group>
-    <group>
-        <name>DataPacking</name>
-        <group>
-            <name>Inc</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Inc\eDSP_DPK.h</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Inc\eDSP_DUNPK.h</name>
-            </file>
-        </group>
-        <group>
-            <name>Src</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eDSP_DPK.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\DataPacking\Src\eDSP_DUNPK.c</name>
-            </file>
         </group>
     </group>
     <group>
@@ -1187,21 +1132,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Math\Src\eDSP_S2DPI64LINEAR.c</name>
-            </file>
-        </group>
-    </group>
-    <group>
-        <name>Queue</name>
-        <group>
-            <name>Inc</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\Queue\Inc\eDSP_CIRQ.h</name>
-            </file>
-        </group>
-        <group>
-            <name>Src</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\Src\Queue\Src\eDSP_CIRQ.c</name>
             </file>
         </group>
     </group>
