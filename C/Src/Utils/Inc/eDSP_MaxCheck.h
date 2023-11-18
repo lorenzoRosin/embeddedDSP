@@ -40,7 +40,7 @@ typedef enum
  * GLOBAL PROTOTYPES
  **********************************************************************************************************************/
 /**
- * @brief       Given two value check if the sum exceed the int64_t storage area
+ * @brief       Given two value check if the sum exceed the int64_t storage area ( p_iFirst + p_iSecond )
  * @param[in]   p_iFirst           - First operator
  * @param[in]   p_iSecond          - Second operator
  *
@@ -50,7 +50,7 @@ typedef enum
 e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
 
 /**
- * @brief       Given two value check if the subtration exceed the int64_t storage area
+ * @brief       Given two value check if the subtration exceed the int64_t storage area ( p_iFirst - p_iSecond )
  * @param[in]   p_iFirst           - First operator
  * @param[in]   p_iSecond          - Second operator
  *
@@ -60,7 +60,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int6
 e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
 
 /**
- * @brief       Given two value check if the moltiplication exceed the int64_t storage area
+ * @brief       Given two value check if the moltiplication exceed the int64_t storage area ( p_iFirst * p_iSecond )
  * @param[in]   p_iFirst           - First operator
  * @param[in]   p_iSecond          - Second operator
  *
