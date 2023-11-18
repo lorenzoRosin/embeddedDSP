@@ -105,7 +105,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eDSP_CIRQ_RES_NOINITLIB;
+			l_eRes = e_eDSP_M2DPI64LINEAR_RES_NOINITLIB;
 		}
 		else
 		{
@@ -116,54 +116,45 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
             }
 			else
 			{
-                /* Check data validity */
-				/* Check param, we must esclude from the calculation point with the same X, escluding do equals point and
-				point that can generate a line angle line */
-				if( p_tP1.uX == p_tP2.uX )
+				/* Init vaiable */
+				l_uIndx = 0u;
+
+				/* Check corner case before starting */
+				if( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[0u].uX )
 				{
-					l_eRes = e_eDSP_M2DPI64LINEAR_RES_BADPARAM;
+					/* point request is pre data  */
+					l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[0u];
+					l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[1u];
+				}
+				else if( p_uX >= p_ptCtx->tPoinSeries.ptPointArray[ ( p_ptCtx->tPoinSeries.uNumPoint - 1u ) ].uX )
+				{
+					/* point request is post data  */
+					l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[( p_ptCtx->tPoinSeries.uNumPoint - 2u )];
+					l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[( p_ptCtx->tPoinSeries.uNumPoint - 1u )];
 				}
 				else
 				{
-					/* Init vaiable */
-					l_uIndx = 0u;
+					/* point request is inside data  */
+					while( l_uIndx < ( p_ptCtx->tPoinSeries.uNumPoint - 1u ) )
+					{
 
-					/* Check corner case before starting */
-					if( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[0u] )
-					{
-						/* point request is pre data  */
-						l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[0u];
-						l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[1u];
-					}
-					else if( p_uX >= p_ptCtx->tPoinSeries.ptPointArray[ ( p_ptCtx->tPoinSeries.uNumPoint - 1u ) ] )
-					{
-						/* point request is post data  */
-						l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[( p_ptCtx->tPoinSeries.uNumPoint - 2u )];
-						l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[( p_ptCtx->tPoinSeries.uNumPoint - 1u )];
-					}
-					else
-					{
-						/* point request is inside data  */
-						while( l_uIndx < ( p_ptCtx->tPoinSeries.uNumPoint - 1u ) )
+
+						if( ( p_uX >= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx].uX ) &&
+						    ( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx+ 1u].uX ))
 						{
-
-							if( ( p_uX >= p_tListCheck.ptPointArray[l_uIndx].uX ) && 
-							    ( p_uX <= p_tListCheck.ptPointArray[l_uIndx+ 1u].uX ))
-							{
-								l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx];
-								l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u];
-							}
-
-							/* Increase counter */
-							l_uIndx++;
+							l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx];
+							l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u];
 						}
-					}
 
-					/* Linearize */
-					l_eSingleRes = eDSP_S2DPI64LINEAR_Linearize(l_tPFirst, l_tPSecond, p_uX, p_puY);
-					l_eRes = eDSP_M2DPI64LINEAR_MaxCheckRestToS2DP(eDSP_M2DPI64LINEAR_S2DPTRestoM2DP);
+						/* Increase counter */
+						l_uIndx++;
+					}
 				}
-			}			
+
+				/* Linearize */
+				l_eSingleRes = eDSP_S2DPI64LINEAR_Linearize(l_tPFirst, l_tPSecond, p_uX, p_puY);
+				l_eRes = eDSP_M2DPI64LINEAR_S2DPTRestoM2DP(l_eSingleRes);
+			}
 		}
     }
 
@@ -179,33 +170,9 @@ static bool_t eDSP_M2DPI64LINEAR_IsStatusStillCoherent(t_eDSP_M2DPI64LINEAR_Ctx*
 {
     /* Return local var */
     bool_t l_eRes;
-    e_eDSP_DBC_RES l_eDBCRes;
 
-    /* Local variable for storage */
-    t_eDSP_DBC_StorBuf l_tBuff;
-    uint32_t l_uTotPage;
-
-    /* Get usable pages and buffer length so we can check database default value validity */
-    l_uTotPage = 0u;
-    l_eDBCRes = eDSP_DBC_GetBuffNUsable(&p_ptCtx->tDbcCtx, &l_tBuff, &l_uTotPage);
-
-    if( e_eDSP_DBC_RES_OK != l_eDBCRes )
-    {
-        l_eRes = false;
-    }
-    else
-    {
-        /* Check data validity */
-        if( ( l_uTotPage <= 0u ) || ( l_tBuff.uBufL < EFSS_M2DPI64LINEAR_MINPAGESIZE ) )
-        {
-            l_eRes = false;
-        }
-        else
-        {
-            /* Check validity of the passed db struct */
-            l_eRes = eDSP_M2DPI64LINEAR_IsDbDefStructValid(p_ptCtx->tDB, l_uTotPage, l_tBuff.uBufL);
-        }
-    }
+	/* We must check only the coherence of the point array */
+	l_eRes = eDSP_M2DPI64LINEAR_IsListValid(p_ptCtx->tPoinSeries);
 
     return l_eRes;
 }
@@ -217,7 +184,7 @@ static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_S2DPTRestoM2DP(const e_eDSP_S
 
 	switch( p_eRet )
 	{
-		case e_eDSP_S2DPI64LINEAR_RES_OK: 
+		case e_eDSP_S2DPI64LINEAR_RES_OK:
 		{
 			l_eRet = e_eDSP_M2DPI64LINEAR_RES_OK;
 			break;
@@ -244,7 +211,7 @@ static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_S2DPTRestoM2DP(const e_eDSP_S
 		default:
 		{
 			l_eRet = e_eDSP_M2DPI64LINEAR_RES_CORRUPTCTX;
-		}	
+		}
 	}
 
 
