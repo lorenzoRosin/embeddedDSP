@@ -56,64 +56,84 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 		}
 		else
 		{
-			/* Find the first point and then the second */
-			if( p_tP1.uX <= p_tP2.uX )
+			/* Esclude from calculation precise point */
+			if( p_tP1.uX == p_iX )
 			{
-				l_tPFirst = p_tP1;
-				l_tPSecond = p_tP2;
+				/* No need for calculation here */
+				*p_piY = p_tP1.uY;
+
+				/* All ok */
+				l_eRes = e_eDSP_S2DPI64LINEAR_RES_OK;
+			}
+			else if( p_tP2.uX == p_iX )
+			{
+				/* No need for calculation here */
+				*p_piY = p_tP2.uY;
+
+				/* All ok */
+				l_eRes = e_eDSP_S2DPI64LINEAR_RES_OK;
 			}
 			else
 			{
-				l_tPFirst = p_tP2;
-				l_tPSecond = p_tP1;
-			}
+				/* Find the first point and then the second */
+				if( p_tP1.uX <= p_tP2.uX )
+				{
+					l_tPFirst = p_tP1;
+					l_tPSecond = p_tP2;
+				}
+				else
+				{
+					l_tPFirst = p_tP2;
+					l_tPSecond = p_tP1;
+				}
 
-			/* do calculation:
-			   line definition -> y = m * x + q
-			   we can find m doing -> m = dy/dx = ( Ysecond - Yfirst ) / ( Xsecond - Xfirst )
-			   q is equals to -> q = Yfirst - m*Xfirst
-			   and so y is -> y = m*x + q = m * x + Yfirst - m * Xfirst = m * ( x - Xfirst ) + Yfirst
-			                    = ( ( Ysecond - Yfirst )  * ( x - Xfirst ) ) / ( Xsecond - Xfirst ) + Yfirst
-								= ( ( A )  * ( B ) ) / ( C ) + Yfirst
-			   we need to be carefull because we are not using floating point, and we must retain as much precision as
-			   possible */
+				/* do calculation:
+				line definition -> y = m * x + q
+				we can find m doing -> m = dy/dx = ( Ysecond - Yfirst ) / ( Xsecond - Xfirst )
+				q is equals to -> q = Yfirst - m*Xfirst
+				and so y is -> y = m*x + q = m * x + Yfirst - m * Xfirst = m * ( x - Xfirst ) + Yfirst
+									= ( ( Ysecond - Yfirst )  * ( x - Xfirst ) ) / ( Xsecond - Xfirst ) + Yfirst
+									= ( ( A )  * ( B ) ) / ( C ) + Yfirst
+				we need to be carefull because we are not using floating point, and we must retain as much precision as
+				possible */
 
-			/* Calculate single addend */
-			l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uY, l_tPFirst.uY);
-			l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
-
-			if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
-			{
-				l_iA = l_tPSecond.uY - l_tPFirst.uY;
-
-				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_iX, l_tPFirst.uX);
+				/* Calculate single addend */
+				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uY, l_tPFirst.uY);
 				l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 				if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 				{
-					l_iB = p_iX - l_tPFirst.uX;
+					l_iA = l_tPSecond.uY - l_tPFirst.uY;
 
-					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uX , l_tPFirst.uX);
+					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_iX, l_tPFirst.uX);
 					l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 					if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 					{
-						l_iC = l_tPSecond.uX - l_tPFirst.uX;
+						l_iB = p_iX - l_tPFirst.uX;
 
-						l_eMaxRes = eDSP_MAXCHECK_MOLTIPI64Check(l_iA, l_iB);
+						l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uX , l_tPFirst.uX);
 						l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 						if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 						{
-							l_iAB = l_iA * l_iB;
-							l_iABC = l_iAB / l_iC;
+							l_iC = l_tPSecond.uX - l_tPFirst.uX;
 
-							l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iABC, l_tPFirst.uY);
+							l_eMaxRes = eDSP_MAXCHECK_MOLTIPI64Check(l_iA, l_iB);
 							l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 							if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 							{
-								*p_piY = l_iABC + l_tPFirst.uY;
+								l_iAB = l_iA * l_iB;
+								l_iABC = l_iAB / l_iC;
+
+								l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iABC, l_tPFirst.uY);
+								l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
+
+								if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
+								{
+									*p_piY = l_iABC + l_tPFirst.uY;
+								}
 							}
 						}
 					}
