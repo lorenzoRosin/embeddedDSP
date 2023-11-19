@@ -33,8 +33,6 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Local variable for calculation */
-	t_eDSP_TYPE_2DPI64 l_tPFirst;
-	t_eDSP_TYPE_2DPI64 l_tPSecond;
 	uint64_t l_iA;
 	uint64_t l_iB;
 	uint64_t l_iC;
@@ -75,18 +73,6 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 			}
 			else
 			{
-				/* Find the first point and then the second */
-				if( p_tP1.uX <= p_tP2.uX )
-				{
-					l_tPFirst = p_tP1;
-					l_tPSecond = p_tP2;
-				}
-				else
-				{
-					l_tPFirst = p_tP2;
-					l_tPSecond = p_tP1;
-				}
-
 				/* do calculation:
 				line definition -> y = m * x + q
 				we can find m doing -> m = dy/dx = ( Ysecond - Yfirst ) / ( Xsecond - Xfirst )
@@ -98,26 +84,26 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 				possible */
 
 				/* Calculate single addend */
-				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uY, l_tPFirst.uY);
+				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_tP2.uY, p_tP1.uY);
 				l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 				if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 				{
-					l_iA = l_tPSecond.uY - l_tPFirst.uY;
+					l_iA = p_tP2.uY - p_tP1.uY;
 
-					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_iX, l_tPFirst.uX);
+					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_iX, p_tP1.uX);
 					l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 					if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 					{
-						l_iB = p_iX - l_tPFirst.uX;
+						l_iB = p_iX - p_tP1.uX;
 
-						l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uX , l_tPFirst.uX);
+						l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_tP2.uX , p_tP1.uX);
 						l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 						if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 						{
-							l_iC = l_tPSecond.uX - l_tPFirst.uX;
+							l_iC = p_tP2.uX - p_tP1.uX;
 
 							l_eMaxRes = eDSP_MAXCHECK_MOLTIPI64Check(l_iA, l_iB);
 							l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
@@ -127,12 +113,12 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 								l_iAB = l_iA * l_iB;
 								l_iABC = l_iAB / l_iC;
 
-								l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iABC, l_tPFirst.uY);
+								l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iABC, p_tP1.uY);
 								l_eRes = eDSP_S2DPI64LINEAR_MaxCheckResToS2DP(l_eMaxRes);
 
 								if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 								{
-									*p_piY = l_iABC + l_tPFirst.uY;
+									*p_piY = l_iABC + p_tP1.uY;
 								}
 							}
 						}
