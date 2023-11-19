@@ -26,7 +26,7 @@ static e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_MaxCheckRestToS2DP(const e_eD
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
 e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p_tP1, const t_eDSP_TYPE_2DPI64 p_tP2,
-                                                      const int64_t p_uX, int64_t* const p_puY)
+                                                      const int64_t p_iX, int64_t* const p_piY)
 {
 	/* Local variable for return */
 	e_eDSP_S2DPI64LINEAR_RES l_eRes;
@@ -41,7 +41,7 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 	uint64_t l_iAB;
 	uint64_t l_iABC;
 	/* Check pointer validity */
-	if( NULL == p_puY )
+	if( NULL == p_piY )
 	{
 		l_eRes = e_eDSP_S2DPI64LINEAR_RES_BADPOINTER;
 	}
@@ -85,12 +85,12 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 			{
 				l_iA = l_tPSecond.uY - l_tPFirst.uY;
 
-				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_uX, l_tPFirst.uX);
+				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_iX, l_tPFirst.uX);
 				l_eRes = eDSP_S2DPI64LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
 
 				if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 				{
-					l_iB = p_uX - l_tPFirst.uX;
+					l_iB = p_iX - l_tPFirst.uX;
 
 					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_tPSecond.uX , l_tPFirst.uX);
 					l_eRes = eDSP_S2DPI64LINEAR_MaxCheckRestToS2DP(l_eMaxRes);
@@ -112,7 +112,7 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 
 							if( e_eDSP_S2DPI64LINEAR_RES_OK == l_eRes )
 							{
-								*p_puY = l_iABC + l_tPFirst.uY;
+								*p_piY = l_iABC + l_tPFirst.uY;
 							}
 						}
 					}
@@ -139,7 +139,7 @@ static e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_MaxCheckRestToS2DP(const e_eD
 	}
 	else
 	{
-		l_eRet = e_eDSP_S2DPI64LINEAR_RES_OUTLIMIT;
+		l_eRet = e_eDSP_S2DPI64LINEAR_RES_OVERFLOW;
 	}
 
 	return l_eRet;

@@ -33,7 +33,7 @@ typedef enum
     e_eDSP_S2DPI64LINEAR_RES_OK = 0,
     e_eDSP_S2DPI64LINEAR_RES_BADPOINTER,
     e_eDSP_S2DPI64LINEAR_RES_BADPARAM,
-    e_eDSP_S2DPI64LINEAR_RES_OUTLIMIT
+    e_eDSP_S2DPI64LINEAR_RES_OVERFLOW
 }e_eDSP_S2DPI64LINEAR_RES;
 
 
@@ -46,17 +46,19 @@ typedef enum
  *
  * @param[in]   p_tP1           - First point
  * @param[in]   p_tP2           - Second point
- * @param[in]   p_uX            - X value to use during the calculation of the Y value
- * @param[in]   p_puY           - Pointer to an int64_t where the value of the calculated Y will be placed.
+ * @param[in]   p_iX            - X value to use during the calculation of the Y value
+ * @param[in]   p_piY           - Pointer to an int64_t where the value of the calculated Y will be placed.
  *
  * @return      e_eDSP_S2DPI64LINEAR_RES_BADPOINTER   - In case of bad pointer passed to the function
  *		        e_eDSP_S2DPI64LINEAR_RES_BADPARAM     - In case of an invalid parameter passed to the function.
  *                                                    - so when the two point are the same or when the line as and angle
  *                                                    - of +-90 degree
+ *		        e_eDSP_S2DPI64LINEAR_RES_OVERFLOW     - In case some internal operation generate an overflow, usualy
+ *                                                    - due to the fact that we are using too large values
  *              e_eDSP_S2DPI64LINEAR_RES_OK           - Operation ended correctly
  */
 e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p_tP1, const t_eDSP_TYPE_2DPI64 p_tP2,
-                                                      const int64_t p_uX, int64_t* const p_puY);
+                                                      const int64_t p_iX, int64_t* const p_piY);
 
 
 
