@@ -27,7 +27,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int6
 	{
 		if( p_iFirst > ( MAX_INT64VAL - p_iSecond ) )
 		{
-			l_eRes = e_eDSP_MAXCHECK_OUTLIMIT;
+			l_eRes = e_eDSP_MAXCHECK_OVERFLOW;
 		}
 		else
 		{
@@ -38,7 +38,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int6
 	{
 		if( p_iFirst < ( MIN_INT64VAL + p_iSecond ) )
 		{
-			l_eRes = e_eDSP_MAXCHECK_OUTLIMIT;
+			l_eRes = e_eDSP_MAXCHECK_OVERFLOW;
 		}
 		else
 		{
@@ -81,7 +81,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const i
 		/* Positive result */
 		if( p_iFirst > ( MAX_INT64VAL / p_iSecond ) )
 		{
-			l_eRes = e_eDSP_MAXCHECK_OUTLIMIT;
+			l_eRes = e_eDSP_MAXCHECK_OVERFLOW;
 		}
 		else
 		{
@@ -93,7 +93,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const i
 		/* Positive result */
 		if( p_iFirst < ( MAX_INT64VAL / p_iSecond ) )
 		{
-			l_eRes = e_eDSP_MAXCHECK_OUTLIMIT;
+			l_eRes = e_eDSP_MAXCHECK_OVERFLOW;
 		}
 		else
 		{
@@ -105,7 +105,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const i
 		/* Negative result */
 		if( p_iFirst > ( MIN_INT64VAL / p_iSecond ) )
 		{
-			l_eRes = e_eDSP_MAXCHECK_OUTLIMIT;
+			l_eRes = e_eDSP_MAXCHECK_OVERFLOW;
 		}
 		else
 		{
@@ -117,7 +117,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const i
 		/* Negative result */
 		if( p_iFirst < ( MIN_INT64VAL / p_iSecond ) )
 		{
-			l_eRes = e_eDSP_MAXCHECK_OUTLIMIT;
+			l_eRes = e_eDSP_MAXCHECK_OVERFLOW;
 		}
 		else
 		{

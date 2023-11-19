@@ -31,7 +31,7 @@ extern "C" {
 typedef enum
 {
     e_eDSP_MAXCHECK_RES_OK = 0,
-    e_eDSP_MAXCHECK_OUTLIMIT
+    e_eDSP_MAXCHECK_OVERFLOW
 }e_eDSP_MAXCHECK_RES;
 
 
@@ -44,7 +44,7 @@ typedef enum
  * @param[in]   p_iFirst           - First operator
  * @param[in]   p_iSecond          - Second operator
  *
- * @return      e_eDSP_MAXCHECK_OUTLIMIT         - Operation exceed limits
+ * @return      e_eDSP_MAXCHECK_OVERFLOW         - Operation exceed limits
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
 e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
@@ -54,7 +54,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUMI64Check(const int64_t p_iFirst, const int6
  * @param[in]   p_iFirst           - First operator
  * @param[in]   p_iSecond          - Second operator
  *
- * @return      e_eDSP_MAXCHECK_OUTLIMIT         - Operation exceed limits
+ * @return      e_eDSP_MAXCHECK_OVERFLOW         - Operation exceed limits
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
 e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
@@ -64,7 +64,7 @@ e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_SUBTI64Check(const int64_t p_iFirst, const int
  * @param[in]   p_iFirst           - First operator
  * @param[in]   p_iSecond          - Second operator
  *
- * @return      e_eDSP_MAXCHECK_OUTLIMIT         - Operation exceed limits
+ * @return      e_eDSP_MAXCHECK_OVERFLOW         - Operation exceed limits
  *              e_eDSP_MAXCHECK_RES_OK           - Operation dosen't exceed limits
  */
 e_eDSP_MAXCHECK_RES eDSP_MAXCHECK_MOLTIPI64Check(const int64_t p_iFirst, const int64_t p_iSecond);
