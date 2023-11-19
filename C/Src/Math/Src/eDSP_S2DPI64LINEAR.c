@@ -74,14 +74,14 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 			else
 			{
 				/* do calculation:
-				line definition -> y = m * x + q
-				we can find m doing -> m = dy/dx = ( Ysecond - Yfirst ) / ( Xsecond - Xfirst )
-				q is equals to -> q = Yfirst - m*Xfirst
-				and so y is -> y = m*x + q = m * x + Yfirst - m * Xfirst = m * ( x - Xfirst ) + Yfirst
-									= ( ( Ysecond - Yfirst )  * ( x - Xfirst ) ) / ( Xsecond - Xfirst ) + Yfirst
-									= ( ( A )  * ( B ) ) / ( C ) + Yfirst
-				we need to be carefull because we are not using floating point, and we must retain as much precision as
-				possible */
+				   1) line definition ->  y = m * x + q
+				   2) m definition    ->  m = dy / dx = ( Yp1 - Yp2 ) / ( Xp1 - Xp2 ) = ( Yp2 - Yp1 ) / ( Xp2 - Xp1 )
+				   3) q definition    ->  q = y - m * x = Yp1 - m * Xp1 = Yp2 - m * Xp2
+				   4) y calculation   ->  y = m * x + q = m * x + Yp1 - m * Xp1 = m * ( x - Xp1 ) + Yp1
+									        = ( ( Yp2 - Yp1 )  * ( x - Xp1 ) ) / ( Xp2 - Xp1 ) + Yp1
+									        = ( ( A )  * ( B ) ) / ( C ) + Yp1
+				   Note: we need to be carefull because we are not using floating point, and we must retain as much
+				         precision as possible */
 
 				/* Calculate single addend */
 				l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_tP2.uY, p_tP1.uY);
