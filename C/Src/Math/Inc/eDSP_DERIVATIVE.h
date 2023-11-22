@@ -1,7 +1,7 @@
 /**
  * @file       eDSP_DERIVATIVE.h
  *
- * @brief      Multiple 2D point Linearization on a int64_t
+ * @brief      Derivation operation modules
  *
  * @author     Lorenzo Rosin
  *
@@ -33,7 +33,7 @@ typedef enum
     e_eDSP_DERIVATIVE_RES_OK = 0,
     e_eDSP_DERIVATIVE_RES_BADPOINTER,
     e_eDSP_DERIVATIVE_RES_BADPARAM,
-    e_eDSP_DERIVATIVE_RES_OUTLIMIT,
+    e_eDSP_DERIVATIVE_RES_OVERFLOW,
     e_eDSP_DERIVATIVE_RES_CORRUPTCTX,
     e_eDSP_DERIVATIVE_RES_NOINITLIB
 }e_eDSP_DERIVATIVE_RES;

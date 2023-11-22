@@ -201,7 +201,7 @@ static e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_MaxCheckRestToS2DP(const e_eDSP_MAXCHEC
 	}
 	else
 	{
-		l_eRet = e_eDSP_INTEGRAL_RES_OUTLIMIT;
+		l_eRet = e_eDSP_INTEGRAL_RES_OVERFLOW;
 	}
 
 	return l_eRet;

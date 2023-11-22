@@ -201,7 +201,7 @@ static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAX
 	}
 	else
 	{
-		l_eRet = e_eDSP_DERIVATIVE_RES_OUTLIMIT;
+		l_eRet = e_eDSP_DERIVATIVE_RES_OVERFLOW;
 	}
 
 	return l_eRet;
