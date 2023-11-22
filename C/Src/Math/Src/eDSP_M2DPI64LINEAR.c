@@ -138,11 +138,10 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
 					l_bFound = false;
 
 					/* point request is inside data  */
-					while( l_uIndx < p_ptCtx->tPoinSeries.uNumPoint )
+					while( ( l_uIndx < p_ptCtx->tPoinSeries.uNumPoint ) && ( false == l_bFound ) )
 					{
 						if( ( p_uX >= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx].uX ) &&
-						    ( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u].uX ) &&
-							( false == l_bFound ) )
+						    ( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u].uX ) )
 						{
 							l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx];
 							l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u];
