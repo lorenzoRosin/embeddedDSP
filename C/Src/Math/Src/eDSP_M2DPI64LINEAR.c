@@ -20,7 +20,7 @@
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
 static bool_t eDSP_M2DPI64LINEAR_IsStatusStillCoherent(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx);
-static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_S2DPTRestoM2DP(const e_eDSP_S2DPI64LINEAR_RES p_eRet);
+static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_S2DPTResToM2DP(const e_eDSP_S2DPI64LINEAR_RES p_eRet);
 static bool_t eDSP_M2DPI64LINEAR_IsListValid(const t_eDSP_M2DPI64LINEAR_PointSeries p_tListCheck);
 
 
@@ -93,10 +93,10 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
 	t_eDSP_TYPE_2DPI64 l_tPFirst;
 	t_eDSP_TYPE_2DPI64 l_tPSecond;
 	uint32_t l_uIndx;
-
+	bool_t l_bFound;
 
 	/* Check pointer validity */
-	if( NULL == p_puY )
+	if( ( NULL == p_ptCtx ) || ( NULL == p_puY ) )
 	{
 		l_eRes = e_eDSP_M2DPI64LINEAR_RES_BADPOINTER;
 	}
@@ -119,7 +119,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
 				/* Init vaiable */
 				l_uIndx = 0u;
 
-				/* Check corner case before starting */
+				/* Find the two point where linearize */
 				if( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[0u].uX )
 				{
 					/* point request is pre data  */
@@ -134,16 +134,19 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
 				}
 				else
 				{
+					/* Init */
+					l_bFound = false;
+
 					/* point request is inside data  */
-					while( l_uIndx < ( p_ptCtx->tPoinSeries.uNumPoint - 1u ) )
+					while( l_uIndx < p_ptCtx->tPoinSeries.uNumPoint )
 					{
-
-
 						if( ( p_uX >= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx].uX ) &&
-						    ( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx+ 1u].uX ))
+						    ( p_uX <= p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u].uX ) &&
+							( false == l_bFound ) )
 						{
 							l_tPFirst = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx];
 							l_tPSecond = p_ptCtx->tPoinSeries.ptPointArray[l_uIndx + 1u];
+							l_bFound = true;
 						}
 
 						/* Increase counter */
@@ -153,7 +156,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_Linearize(t_eDSP_M2DPI64LINEAR_Ctx* 
 
 				/* Linearize */
 				l_eSingleRes = eDSP_S2DPI64LINEAR_Linearize(l_tPFirst, l_tPSecond, p_uX, p_puY);
-				l_eRes = eDSP_M2DPI64LINEAR_S2DPTRestoM2DP(l_eSingleRes);
+				l_eRes = eDSP_M2DPI64LINEAR_S2DPTResToM2DP(l_eSingleRes);
 			}
 		}
     }
@@ -177,7 +180,7 @@ static bool_t eDSP_M2DPI64LINEAR_IsStatusStillCoherent(t_eDSP_M2DPI64LINEAR_Ctx*
     return l_eRes;
 }
 
-static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_S2DPTRestoM2DP(const e_eDSP_S2DPI64LINEAR_RES p_eRet)
+static e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_S2DPTResToM2DP(const e_eDSP_S2DPI64LINEAR_RES p_eRet)
 {
     /* Return local var */
 	e_eDSP_M2DPI64LINEAR_RES l_eRet;
@@ -233,8 +236,8 @@ static bool_t eDSP_M2DPI64LINEAR_IsListValid(const t_eDSP_M2DPI64LINEAR_PointSer
 	}
 	else
 	{
-		/* We need al least two point to linearize */
-		if( p_tListCheck.uNumPoint <= 1u )
+		/* We need al least three point to linearize, in case of two point use the single point function */
+		if( p_tListCheck.uNumPoint < 3u )
 		{
 			l_bRet = false;
 		}
@@ -247,7 +250,7 @@ static bool_t eDSP_M2DPI64LINEAR_IsListValid(const t_eDSP_M2DPI64LINEAR_PointSer
 			/* Needs to check that the list is in order and that two point dosen't have any commonx x values */
 			while( ( l_uIndx < ( p_tListCheck.uNumPoint - 1u ) ) && ( true == l_bRet )  )
 			{
-				if( p_tListCheck.ptPointArray[l_uIndx].uX >= p_tListCheck.ptPointArray[l_uIndx+ 1u].uX )
+				if( p_tListCheck.ptPointArray[l_uIndx].uX >= p_tListCheck.ptPointArray[l_uIndx + 1u].uX )
 				{
 					l_bRet = false;
 				}

@@ -62,7 +62,9 @@ typedef struct
  * @param[in]   p_tSeries     - Struct containing the series of point
  *
  * @return      e_eDSP_M2DPI64LINEAR_RES_BADPOINTER     - In case of bad pointer passed to the function
- *		        e_eDSP_M2DPI64LINEAR_RES_BADPARAM       - In case of an invalid parameter passed to the function
+ *		        e_eDSP_M2DPI64LINEAR_RES_BADPARAM       - In case of an invalid parameter passed to the function.
+ *                                                      - so when the two point are the same or when the line as and
+ *                                                      - angle of +-90 degree, or when there are less than 3 point
  *              e_eDSP_M2DPI64LINEAR_RES_OK             - Multiple point linearizer initialized successfully
  */
 e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_InitCtx(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx,
@@ -80,17 +82,14 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_InitCtx(t_eDSP_M2DPI64LINEAR_Ctx* co
 e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_IsInit(t_eDSP_M2DPI64LINEAR_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
- * @brief       Given the series of point used during the init phase, calculate the Y value of the line passing in the
- *              provided two point, given an X value
+ * @brief       Given the series of point used during the init phase, calculate the Y value of the line passing in
+ *              nearest two point of the series, given an X value
  *
  * @param[in]   p_ptCtx         - Multiple point linearizer context
  * @param[in]   p_uX            - X value to use during the calculation of the Y value
  * @param[in]   p_puY           - Pointer to an int64_t where the value of the calculated Y will be placed.
  *
  * @return      e_eDSP_M2DPI64LINEAR_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eDSP_M2DPI64LINEAR_RES_BADPARAM     - In case of an invalid parameter passed to the function.
- *                                                    - so when the two point are the same or when the line as and angle
- *                                                    - of +-90 degree
  *		        e_eDSP_M2DPI64LINEAR_RES_NOINITLIB    - Need to init the data stuffer context before taking some action
  *		        e_eDSP_M2DPI64LINEAR_RES_CORRUPTCTX   - In case of an corrupted context
  *              e_eDSP_M2DPI64LINEAR_RES_OK           - Operation ended correctly
