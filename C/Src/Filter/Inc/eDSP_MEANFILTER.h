@@ -92,7 +92,7 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCt
  *		        e_eDSP_DERIVATIVE_RES_CORRUPTCTX   - In case of an corrupted context
  *              e_eDSP_DERIVATIVE_RES_OK           - Operation ended correctly
  */
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_value,
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_iValue,
                                                   const uint32_t p_timeFromLast);
 
 /**

@@ -47,7 +47,7 @@ typedef enum
  * @param[in]   p_tP1           - First point
  * @param[in]   p_tP2           - Second point
  * @param[in]   p_iX            - X value to use during the calculation of the Y value
- * @param[in]   p_piY           - Pointer to an int64_t where the value of the calculated Y will be placed.
+ * @param[out]  p_piY           - Pointer to an int64_t where the value of the calculated Y will be placed.
  *
  * @return      e_eDSP_S2DPI64LINEAR_RES_BADPOINTER   - In case of bad pointer passed to the function
  *		        e_eDSP_S2DPI64LINEAR_RES_BADPARAM     - In case of an invalid parameter passed to the function.

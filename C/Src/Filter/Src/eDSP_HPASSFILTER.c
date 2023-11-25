@@ -19,7 +19,7 @@
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
 static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx);
-static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckResToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
 /***********************************************************************************************************************
@@ -71,7 +71,7 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCt
 	return l_eRes;
 }
 
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_value,
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_iValue,
                                                   const uint32_t p_timeFromLast)
 {
 	/* Local variable for return */
@@ -107,7 +107,7 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p
 				{
 					/* Check data validity */
 					p_ptCtx->uPreviousVal = p_ptCtx->uCurrentVal;
-					p_ptCtx->uCurrentVal = p_value;
+					p_ptCtx->uCurrentVal = p_iValue;
 					p_ptCtx->uTimeElapsedFromCurToPre = p_timeFromLast;
 
 					if( false == p_ptCtx->bHasCurrent )
@@ -161,7 +161,7 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_CalcDerivate(t_eDSP_DERIVATIVE_Ctx* const 
 				else
 				{
 					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_ptCtx->uCurrentVal, p_ptCtx->uPreviousVal);
-					l_eRes = eDSP_DERIVATIVE_MaxCheckRestToS2DP(l_eMaxRes);
+					l_eRes = eDSP_DERIVATIVE_MaxCheckResToS2DP(l_eMaxRes);
 
 					if( e_eDSP_DERIVATIVE_RES_OK == l_eRes )
 					{
@@ -191,7 +191,7 @@ static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const
     return l_eRes;
 }
 
-static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckResToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
 	e_eDSP_DERIVATIVE_RES l_eRet;
 

@@ -87,7 +87,7 @@ e_eDSP_M2DPI64LINEAR_RES eDSP_M2DPI64LINEAR_IsInit(t_eDSP_M2DPI64LINEAR_Ctx* con
  *
  * @param[in]   p_ptCtx         - Multiple point linearizer context
  * @param[in]   p_uX            - X value to use during the calculation of the Y value
- * @param[in]   p_puY           - Pointer to an int64_t where the value of the calculated Y will be placed.
+ * @param[out]  p_puY           - Pointer to an int64_t where the value of the calculated Y will be placed.
  *
  * @return      e_eDSP_M2DPI64LINEAR_RES_BADPOINTER   - In case of bad pointer passed to the function
  *		        e_eDSP_M2DPI64LINEAR_RES_NOINITLIB    - Need to init the data stuffer context before taking some action

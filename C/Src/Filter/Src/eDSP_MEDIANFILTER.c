@@ -1,7 +1,7 @@
 /**
- * @file       eDSP_DERIVATIVE.h
+ * @file       eDSP_MEDIANFILTER.c
  *
- * @brief      Multiple 2D point Linearization on a int64_t
+ * @brief      Median filter implementation
  *
  * @author     Lorenzo Rosin
  *
@@ -10,7 +10,7 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eDSP_DERIVATIVE.h"
+#include "eDSP_MEDIANFILTER.h"
 #include "eDSP_MAXCHECK.h"
 
 
@@ -18,155 +18,189 @@
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx);
-static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+static bool_t eDSP_MEDIANFILTER_IsStatusStillCoherent(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx);
+static e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_MaxCheckResToMed(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InitCtx(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx)
+e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InitCtx(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer, 
+                                                  uint32_t p_uWindowsBuffLen)
 {
 	/* Local variable */
-	e_eDSP_DERIVATIVE_RES l_eRes;
+	e_eDSP_MEDIANFILTER_RES l_eRes;
 
 	/* Check pointer validity */
-	if( NULL == p_ptCtx )
+	if( ( NULL == p_ptCtx ) || ( NULL == p_piWindowsBuffer ) )
 	{
-		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
+		l_eRes = e_eDSP_MEDIANFILTER_RES_BADPOINTER;
 	}
 	else
 	{
-        /* Initialize internal status */
-        p_ptCtx->bIsInit = true;
-        p_ptCtx->bHasPrev = false;
-		p_ptCtx->bHasCurrent = false;
-		p_ptCtx->uPreviousVal = 0;
-		p_ptCtx->uCurrentVal = 0;
-		p_ptCtx->uTimeElapsedFromCurToPre = 0u;
+		/* Check data validity */
+		if( p_uWindowsBuffLen <= 2u )
+		{
+			l_eRes = e_eDSP_MEDIANFILTER_RES_BADPARAM;
+		}
+		else
+		{
+			/* Initialize internal status */
+			p_ptCtx->bIsInit = true;
+			p_ptCtx->uWindowsLen = p_uWindowsBuffLen;
+			p_ptCtx->uFilledData = 0u;
+			p_ptCtx->uCurDataLocation = 0u;
+			memset(piWindowsBuffer, 0, sizeof(int64_t));
 
-		/* All OK */
-        l_eRes = e_eDSP_DERIVATIVE_RES_OK;
+			/* All OK */
+			l_eRes = e_eDSP_MEDIANFILTER_RES_OK;
+		}
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_IsInit(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eDSP_DERIVATIVE_RES l_eRes;
+	e_eDSP_MEDIANFILTER_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
+		l_eRes = e_eDSP_MEDIANFILTER_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eDSP_DERIVATIVE_RES_OK;
+        l_eRes = e_eDSP_MEDIANFILTER_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_value,
-                                                  const uint32_t p_timeFromLast)
+e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, 
+                                                                  const int64_t p_iValue, int64_t* const p_pFilteredVal)
 {
 	/* Local variable for return */
-	e_eDSP_DERIVATIVE_RES l_eRes;
-
-	/* Check pointer validity */
-	if( NULL == p_ptCtx )
-	{
-		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
-	}
-	else
-	{
-		/* Check Init */
-		if( false == p_ptCtx->bIsInit )
-		{
-			l_eRes = e_eDSP_DERIVATIVE_RES_NOINITLIB;
-		}
-		else
-		{
-            /* Check data coherence */
-            if( false == eDSP_DERIVATIVE_IsStatusStillCoherent(p_ptCtx) )
-            {
-                l_eRes = e_eDSP_DERIVATIVE_RES_CORRUPTCTX;
-            }
-			else
-			{
-                /* Check data validity */
-				if( 0u == p_timeFromLast )
-				{
-					l_eRes = e_eDSP_DERIVATIVE_RES_BADPARAM;
-				}
-				else
-				{
-					/* Check data validity */
-					p_ptCtx->uPreviousVal = p_ptCtx->uCurrentVal;
-					p_ptCtx->uCurrentVal = p_value;
-					p_ptCtx->uTimeElapsedFromCurToPre = p_timeFromLast;
-
-					if( false == p_ptCtx->bHasCurrent )
-					{
-						p_ptCtx->bHasCurrent = true;
-					}
-					else
-					{
-						p_ptCtx->bHasPrev = true;
-					}
-				}
-			}
-		}
-    }
-
-	return l_eRes;
-}
-
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_CalcDerivate(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, int64_t* const p_piDerivate)
-{
-	/* Local variable for return */
-	e_eDSP_DERIVATIVE_RES l_eRes;
+	e_eDSP_MEDIANFILTER_RES l_eRes;
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
+	/* Local variable for calculation */
+	uint32_t l_uCnt;
+	int64_t l_iSum;
+	int64_t l_iMean;
+	int64_t l_iNearest;
+	int64_t l_iNearestDiff;
+	int64_t l_iCurrDiff;
+
 	/* Check pointer validity */
-	if( ( NULL == p_ptCtx ) || ( NULL == p_piDerivate ))
+	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )
 	{
-		l_eRes = e_eDSP_DERIVATIVE_RES_BADPOINTER;
+		l_eRes = e_eDSP_MEDIANFILTER_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eDSP_DERIVATIVE_RES_NOINITLIB;
+			l_eRes = e_eDSP_MEDIANFILTER_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eDSP_DERIVATIVE_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_MEDIANFILTER_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eDSP_DERIVATIVE_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_MEDIANFILTER_RES_CORRUPTCTX;
             }
 			else
 			{
-                /* Check if we can proceed */
-				if( false == p_ptCtx->bHasPrev )
+				/* Insert data */
+				p_ptCtx->piWindowsBuffer[p_ptCtx->uCurDataLocation] = p_iValue;
+				p_ptCtx->uCurDataLocation++;
+
+				/* Manage rolback */
+				if( p_ptCtx->uCurDataLocation >= p_ptCtx->uWindowsLen )
 				{
-					l_eRes = e_eDSP_DERIVATIVE_RES_BADPARAM;
+					p_ptCtx->uCurDataLocation = 0u;
+				}
+
+				if( p_ptCtx->uFilledData < ( p_ptCtx->uWindowsLen - 1u ) )
+				{
+					/* Increase filler counter */
+					p_ptCtx->uFilledData++;
+
+					/* Need more data */
+					l_eRes = e_eDSP_MEDIANFILTER_RES_NEEDSMOREVALUE;
 				}
 				else
 				{
-					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_ptCtx->uCurrentVal, p_ptCtx->uPreviousVal);
-					l_eRes = eDSP_DERIVATIVE_MaxCheckRestToS2DP(l_eMaxRes);
+					/* The window is full */
+					l_eRes = e_eDSP_MEDIANFILTER_RES_OK;
+					l_uCnt = 0u;
+					l_iSum = 0u;
 
-					if( e_eDSP_DERIVATIVE_RES_OK == l_eRes )
+					/* Calculate the factibility of the sum for the means */
+					while( ( e_eDSP_MEDIANFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
 					{
-						/* calculate */
-						*p_piDerivate = p_ptCtx->uCurrentVal - p_ptCtx->uPreviousVal / p_ptCtx->uTimeElapsedFromCurToPre;
+						l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iSum, p_ptCtx->piWindowsBuffer[l_uCnt]);
+						l_eRes = eDSP_DERIVATIVE_MaxCheckResToDERIVATE(l_eMaxRes);
+
+						if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+						{
+							l_uCnt++;
+							l_iSum += p_ptCtx->piWindowsBuffer[l_uCnt];
+						}
+					}
+
+					if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+					{
+						/* Calculate the mean */
+						l_iMean = l_iSum / p_ptCtx->uWindowsLen;
+
+						/* re-init counter */
+						l_uCnt = 0u;
+
+						/* search for the nearest one */
+						while( ( e_eDSP_MEDIANFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+						{
+							l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_iMean, p_ptCtx->piWindowsBuffer[l_uCnt]);
+							l_eRes = eDSP_DERIVATIVE_MaxCheckResToDERIVATE(l_eMaxRes);
+
+							if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+							{
+								/* Calc diff */
+								l_iCurrDiff = l_iMean - p_ptCtx->piWindowsBuffer[l_uCnt];
+
+								/* abs of the difference */
+								if( l_iCurrDiff < 0u )
+								{
+									l_iCurrDiff = -l_iCurrDiff;
+								}
+
+								/* On first round init default variable */
+								if( 0u == l_uCnt )
+								{
+									/* On first round init default variable */
+									l_iNearest = p_ptCtx->piWindowsBuffer[l_uCnt];
+									l_iNearestDiff = l_iCurrDiff;
+								}
+								else
+								{
+									/* Compare with the alredy founded */
+									if( l_iCurrDiff < l_iNearestDiff )
+									{
+										l_iNearestDiff = p_ptCtx->piWindowsBuffer[l_uCnt];
+									}
+								}
+							}
+						}
+
+						/* if all ok return value */
+						if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+						{
+							*p_pFilteredVal = l_iNearest;
+						}
 					}
 				}
 			}
@@ -181,27 +215,52 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_CalcDerivate(t_eDSP_DERIVATIVE_Ctx* const 
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx)
+static bool_t eDSP_MEDIANFILTER_IsStatusStillCoherent(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx)
 {
     /* Return local var */
     bool_t l_eRes;
 
-	l_eRes = true;
+	/* Check pointer validity */
+	if( NULL == p_ptCtx->piWindowsBuffer )
+	{
+		l_eRes = false;
+	}
+    else
+    {
+		/* Check data validity */
+		if( ( p_ptCtx->uWindowsLen <= 2u ) || ( p_ptCtx->uFilledData > p_ptCtx->uWindowsLen ) || 
+			( p_ptCtx->uCurDataLocation >= p_ptCtx->uWindowsLen )  )
+		{
+			l_eRes = false;    
+		}
+		else
+		{
+			/* Check data validity */
+			if( ( p_ptCtx->uFilledData < p_ptCtx->uWindowsLen ) && ( p_ptCtx->uCurDataLocation >= p_ptCtx->uFilledData ) )
+			{
+				l_eRes = false;    
+			}
+			else
+			{
+				l_eRes = true; 
+			}
+		}	
+    }
 
     return l_eRes;
 }
 
-static e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_MaxCheckRestToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+static e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_MaxCheckResToMed(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
-	e_eDSP_DERIVATIVE_RES l_eRet;
+	e_eDSP_MEDIANFILTER_RES l_eRet;
 
 	if( e_eDSP_MAXCHECK_RES_OK == p_tMaxRet )
 	{
-		l_eRet = e_eDSP_DERIVATIVE_RES_OK;
+		l_eRet = e_eDSP_MEDIANFILTER_RES_OK;
 	}
 	else
 	{
-		l_eRet = e_eDSP_DERIVATIVE_RES_OVERFLOW;
+		l_eRet = e_eDSP_MEDIANFILTER_RES_OVERFLOW;
 	}
 
 	return l_eRet;
