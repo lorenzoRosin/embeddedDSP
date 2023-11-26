@@ -33,11 +33,11 @@ e_eDSP_S2DPI64LINEAR_RES eDSP_S2DPI64LINEAR_Linearize(const t_eDSP_TYPE_2DPI64 p
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Local variable for calculation */
-	uint64_t l_iA;
-	uint64_t l_iB;
-	uint64_t l_iC;
-	uint64_t l_iAB;
-	uint64_t l_iABC;
+	int64_t l_iA;
+	int64_t l_iB;
+	int64_t l_iC;
+	int64_t l_iAB;
+	int64_t l_iABC;
 
 	/* Check pointer validity */
 	if( NULL == p_piY )

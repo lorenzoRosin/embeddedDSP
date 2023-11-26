@@ -81,7 +81,7 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValueAndCalcIntegral(t_eDSP_INTEGRAL_Ctx
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Local Variable for calculation */
-	uint64_t l_uDeltaIncr;
+	int64_t l_uDeltaIncr;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_piIntegral ) )
@@ -111,9 +111,6 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValueAndCalcIntegral(t_eDSP_INTEGRAL_Ctx
 				}
 				else
 				{
-					/* All ok */
-					l_eRes = e_eDSP_INTEGRAL_RES_OK;
-
 					/* Insert data */
 					p_ptCtx->uPreviousVal = p_ptCtx->uCurrentVal;
 					p_ptCtx->uCurrentVal = p_iValue;
@@ -191,7 +188,7 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
 	{
 		/* No current value, no data present in the system */
 		if( ( true == p_ptCtx->bHasPrev ) || ( 0 != p_ptCtx->uPreviousVal ) || ( 0 != p_ptCtx->uCurrentVal ) ||
-			( 0 != p_ptCtx->uTimeElapsFromCurToPre ) || ( 0 != p_ptCtx->uIntegral ) )
+			( 0u != p_ptCtx->uTimeElapsFromCurToPre ) || ( 0 != p_ptCtx->uIntegral ) )
 		{
 			l_eRes = false;
 		}
@@ -206,7 +203,7 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
 		if( false == p_ptCtx->bHasPrev )
 		{
 			/* No previous value */
-			if( ( 0 != p_ptCtx->uPreviousVal ) || ( 0 != p_ptCtx->uTimeElapsFromCurToPre ) )
+			if( ( 0 != p_ptCtx->uPreviousVal ) || ( 0u != p_ptCtx->uTimeElapsFromCurToPre ) )
 			{
 				l_eRes = false;
 			}
@@ -225,7 +222,7 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
 		else
 		{
 			/* Has even a previous value */
-			if( 0 != p_ptCtx->uTimeElapsFromCurToPre )
+			if( 0u != p_ptCtx->uTimeElapsFromCurToPre )
 			{
 				l_eRes = false;
 			}
