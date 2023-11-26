@@ -72,8 +72,8 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCt
 	return l_eRes;
 }
 
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValueAndGetDerivate(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, 
-                                                                const int64_t p_iValue, const uint32_t p_timeFromLast, 
+e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValueAndGetDerivate(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx,
+                                                                const int64_t p_iValue, const uint32_t p_timeFromLast,
                                                                 int64_t* const p_piDerivate)
 {
 	/* Local variable for return */
@@ -120,14 +120,14 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValueAndGetDerivate(t_eDSP_DERIVATIV
 					{
 						/* first entry */
 						p_ptCtx->bHasCurrent = true;
-					}				
+					}
 					else
 					{
 						if( false == p_ptCtx->bHasPrev )
 						{
 							/* First time adding data */
 							p_ptCtx->bHasPrev = true;
-						}						
+						}
 					}
 
 					/* Check if we can proceed with calculation */
@@ -137,7 +137,7 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValueAndGetDerivate(t_eDSP_DERIVATIV
 					}
 					else
 					{
-						/* the derivate operation is defined as follow: 
+						/* the derivate operation is defined as follow:
 						* lim of h -> 0 of the function: ( ( f(x0+h) - f(x0) ) / h ) wich is in ours function:
 						currentvalue - previousvalue / timeelapsed from values */
 						l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_ptCtx->uCurrentVal, p_ptCtx->uPreviousVal);
@@ -146,7 +146,7 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValueAndGetDerivate(t_eDSP_DERIVATIV
 						if( e_eDSP_DERIVATIVE_RES_OK == l_eRes )
 						{
 							/* calculate */
-							*p_piDerivate = ( p_ptCtx->uCurrentVal - p_ptCtx->uPreviousVal ) / 
+							*p_piDerivate = ( p_ptCtx->uCurrentVal - p_ptCtx->uPreviousVal ) /
 											p_ptCtx->uTimeElapsedFromCurToPre;
 						}
 					}
@@ -171,8 +171,8 @@ static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const
 	if( false == p_ptCtx->bHasCurrent )
 	{
 		/* No current value, no data present in the system */
-		if( ( true == p_ptCtx->bHasPrev ) || ( 0 =! p_ptCtx->uPreviousVal ) || ( 0 =! p_ptCtx->uCurrentVal ) || 
-			( 0 =! p_ptCtx->uTimeElapsedFromCurToPre ) )
+		if( ( true == p_ptCtx->bHasPrev ) || ( 0 != p_ptCtx->uPreviousVal ) || ( 0 != p_ptCtx->uCurrentVal ) ||
+			( 0 != p_ptCtx->uTimeElapsedFromCurToPre ) )
 		{
 			l_eRes = false;
 		}
@@ -187,7 +187,7 @@ static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const
 		if( false == p_ptCtx->bHasPrev )
 		{
 			/* No previous value */
-			if( ( 0 =! p_ptCtx->uPreviousVal ) || ( 0 =! p_ptCtx->uTimeElapsedFromCurToPre ) )
+			if( ( 0 != p_ptCtx->uPreviousVal ) || ( 0 != p_ptCtx->uTimeElapsedFromCurToPre ) )
 			{
 				l_eRes = false;
 			}
@@ -199,7 +199,7 @@ static bool_t eDSP_DERIVATIVE_IsStatusStillCoherent(t_eDSP_DERIVATIVE_Ctx* const
 		else
 		{
 			/* Has even a previous value */
-			if( 0 =! p_ptCtx->uTimeElapsedFromCurToPre )
+			if( 0 != p_ptCtx->uTimeElapsedFromCurToPre )
 			{
 				l_eRes = false;
 			}

@@ -1,5 +1,5 @@
 /**
- * @file       eDSP_DERIVATIVE.h
+ * @file       eDSP_HPASSFILTER.h
  *
  * @brief      Multiple 2D point Linearization on a int64_t
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef EDSP_DERIVATIVE_H
-#define EDSP_DERIVATIVE_H
+#ifndef EDSP_HPASSFILTER_H
+#define EDSP_HPASSFILTER_H
 
 
 
@@ -30,13 +30,13 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eDSP_DERIVATIVE_RES_OK = 0,
-    e_eDSP_DERIVATIVE_RES_BADPOINTER,
-    e_eDSP_DERIVATIVE_RES_BADPARAM,
-    e_eDSP_DERIVATIVE_RES_OVERFLOW,
-    e_eDSP_DERIVATIVE_RES_CORRUPTCTX,
-    e_eDSP_DERIVATIVE_RES_NOINITLIB
-}e_eDSP_DERIVATIVE_RES;
+    e_eDSP_HPASSFILTER_RES_OK = 0,
+    e_eDSP_HPASSFILTER_RES_BADPOINTER,
+    e_eDSP_HPASSFILTER_RES_BADPARAM,
+    e_eDSP_HPASSFILTER_RES_OVERFLOW,
+    e_eDSP_HPASSFILTER_RES_CORRUPTCTX,
+    e_eDSP_HPASSFILTER_RES_NOINITLIB
+}e_eDSP_HPASSFILTER_RES;
 
 typedef struct
 {
@@ -46,7 +46,7 @@ typedef struct
     int64_t uPreviousVal;
     int64_t uCurrentVal;
     uint32_t uTimeElapsedFromCurToPre;
-}t_eDSP_DERIVATIVE_Ctx;
+}t_eDSP_HPASSFILTER_Ctx;
 
 
 
@@ -59,11 +59,11 @@ typedef struct
  * @param[in]   p_ptCtx       - Multiple point linearizer context
  * @param[in]   p_tSeries     - Struct containing the series of point
  *
- * @return      e_eDSP_DERIVATIVE_RES_BADPOINTER     - In case of bad pointer passed to the function
- *		        e_eDSP_DERIVATIVE_RES_BADPARAM       - In case of an invalid parameter passed to the function
- *              e_eDSP_DERIVATIVE_RES_OK             - Multiple point linearizer initialized successfully
+ * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *		        e_eDSP_HPASSFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function
+ *              e_eDSP_HPASSFILTER_RES_OK             - Multiple point linearizer initialized successfully
  */
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InitCtx(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx);
+e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_InitCtx(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx);
 
 /**
  * @brief       Check if the lib is initialized
@@ -71,10 +71,10 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InitCtx(t_eDSP_DERIVATIVE_Ctx* const p_ptC
  * @param[in]   p_ptCtx         - Multiple point linearizer context
  * @param[out]  p_pbIsInit      - Pointer to a bool_t variable that will be filled with true if the lib is initialized
  *
- * @return      e_eDSP_DERIVATIVE_RES_BADPOINTER    - In case of bad pointer passed to the function
- *              e_eDSP_DERIVATIVE_RES_OK            - Operation ended correctly
+ * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER    - In case of bad pointer passed to the function
+ *              e_eDSP_HPASSFILTER_RES_OK            - Operation ended correctly
  */
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
+e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_IsInit(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
  * @brief       Given the series of point used during the init phase, calculate the Y value of the line passing in the
@@ -84,15 +84,15 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_IsInit(t_eDSP_DERIVATIVE_Ctx* const p_ptCt
  * @param[in]   p_uX            - X value to use during the calculation of the Y value
  * @param[in]   p_puY           - Pointer to an int64_t where the value of the calculated Y will be placed.
  *
- * @return      e_eDSP_DERIVATIVE_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eDSP_DERIVATIVE_RES_BADPARAM     - In case of an invalid parameter passed to the function.
+ * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_HPASSFILTER_RES_BADPARAM     - In case of an invalid parameter passed to the function.
  *                                                    - so when the two point are the same or when the line as and angle
  *                                                    - of +-90 degree
- *		        e_eDSP_DERIVATIVE_RES_NOINITLIB    - Need to init the data stuffer context before taking some action
- *		        e_eDSP_DERIVATIVE_RES_CORRUPTCTX   - In case of an corrupted context
- *              e_eDSP_DERIVATIVE_RES_OK           - Operation ended correctly
+ *		        e_eDSP_HPASSFILTER_RES_NOINITLIB    - Need to init the data stuffer context before taking some action
+ *		        e_eDSP_HPASSFILTER_RES_CORRUPTCTX   - In case of an corrupted context
+ *              e_eDSP_HPASSFILTER_RES_OK           - Operation ended correctly
  */
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, const int64_t p_iValue,
+e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_InsertValue(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx, const int64_t p_iValue,
                                                   const uint32_t p_timeFromLast);
 
 /**
@@ -103,15 +103,15 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_InsertValue(t_eDSP_DERIVATIVE_Ctx* const p
  * @param[in]   p_uX            - X value to use during the calculation of the Y value
  * @param[in]   p_puY           - Pointer to an int64_t where the value of the calculated Y will be placed.
  *
- * @return      e_eDSP_DERIVATIVE_RES_BADPOINTER   - In case of bad pointer passed to the function
- *		        e_eDSP_DERIVATIVE_RES_BADPARAM     - In case of an invalid parameter passed to the function.
+ * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER   - In case of bad pointer passed to the function
+ *		        e_eDSP_HPASSFILTER_RES_BADPARAM     - In case of an invalid parameter passed to the function.
  *                                                    - so when the two point are the same or when the line as and angle
  *                                                    - of +-90 degree
- *		        e_eDSP_DERIVATIVE_RES_NOINITLIB    - Need to init the data stuffer context before taking some action
- *		        e_eDSP_DERIVATIVE_RES_CORRUPTCTX   - In case of an corrupted context
- *              e_eDSP_DERIVATIVE_RES_OK           - Operation ended correctly
+ *		        e_eDSP_HPASSFILTER_RES_NOINITLIB    - Need to init the data stuffer context before taking some action
+ *		        e_eDSP_HPASSFILTER_RES_CORRUPTCTX   - In case of an corrupted context
+ *              e_eDSP_HPASSFILTER_RES_OK           - Operation ended correctly
  */
-e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_CalcDerivate(t_eDSP_DERIVATIVE_Ctx* const p_ptCtx, int64_t* const p_piDerivate);
+e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_CalcDerivate(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx, int64_t* const p_piDerivate);
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -119,4 +119,4 @@ e_eDSP_DERIVATIVE_RES eDSP_DERIVATIVE_CalcDerivate(t_eDSP_DERIVATIVE_Ctx* const 
 
 
 
-#endif /* EDSP_DERIVATIVE_H */
+#endif /* EDSP_HPASSFILTER_H */

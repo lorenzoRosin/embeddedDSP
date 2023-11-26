@@ -123,14 +123,14 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValueAndCalcIntegral(t_eDSP_INTEGRAL_Ctx
 					{
 						/* first entry */
 						p_ptCtx->bHasCurrent = true;
-					}				
+					}
 					else
 					{
 						if( false == p_ptCtx->bHasPrev )
 						{
 							/* First time adding data */
 							p_ptCtx->bHasPrev = true;
-						}						
+						}
 					}
 
 					/* Check if we can proceed with calculation */
@@ -141,31 +141,31 @@ e_eDSP_INTEGRAL_RES eDSP_INTEGRAL_InsertValueAndCalcIntegral(t_eDSP_INTEGRAL_Ctx
 					}
 					else
 					{
-						/* the integral operation is defined as follow: 
+						/* the integral operation is defined as follow:
 						* Sx   -> lim of h -> 0 of the function: SUM[ f(x)  * ( xh - x) ]
 						* Dx   -> lim of h -> 0 of the function: SUM[ f(xh) * ( xh - x) ]
 						* Mean -> lim of h -> 0 of the function: SUM[ ( (f(xh) - f(x))/2 ) * ( xh - x) ]
 						* when h is pretty small we can have a good aproximation
-						* --> our fun [vSx]:   Integral = Integral + previousvalue * timeelapsed 
-						* --> our fun [vDx]:   Integral = Integral + currentvalue  * timeelapsed  
-						* --> our fun [vMean]: Integral = Integral + ((currentvalue + previousvalue)/2) * timeelapsed 
+						* --> our fun [vSx]:   Integral = Integral + previousvalue * timeelapsed
+						* --> our fun [vDx]:   Integral = Integral + currentvalue  * timeelapsed
+						* --> our fun [vMean]: Integral = Integral + ((currentvalue + previousvalue)/2) * timeelapsed
 						* */
 
 						l_eMaxRes = eDSP_MAXCHECK_MOLTIPI64Check(p_ptCtx->uCurrentVal, p_ptCtx->uTimeElapsFromCurToPre);
-						l_eRes = eDSP_INTEGRAL_MaxCheckResToDERIVATE(l_eMaxRes);
+						l_eRes = eDSP_INTEGRAL_MaxCheckResToINTEGRAL(l_eMaxRes);
 
 						if( e_eDSP_INTEGRAL_RES_OK == l_eRes )
 						{
 							l_uDeltaIncr = p_ptCtx->uCurrentVal * p_ptCtx->uTimeElapsFromCurToPre;
 
 							l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(p_ptCtx->uIntegral, l_uDeltaIncr);
-							l_eRes = eDSP_INTEGRAL_MaxCheckResToDERIVATE(l_eMaxRes);
+							l_eRes = eDSP_INTEGRAL_MaxCheckResToINTEGRAL(l_eMaxRes);
 
 							if( e_eDSP_INTEGRAL_RES_OK == l_eRes )
 							{
 								/* calculate */
 								p_ptCtx->uIntegral = p_ptCtx->uIntegral + l_uDeltaIncr;
-								*p_piIntegral = p_ptCtx->uIntegral; 
+								*p_piIntegral = p_ptCtx->uIntegral;
 							}
 						}
 					}
@@ -190,8 +190,8 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
 	if( false == p_ptCtx->bHasCurrent )
 	{
 		/* No current value, no data present in the system */
-		if( ( true == p_ptCtx->bHasPrev ) || ( 0 =! p_ptCtx->uPreviousVal ) || ( 0 =! p_ptCtx->uCurrentVal ) || 
-			( 0 =! p_ptCtx->uTimeElapsFromCurToPre ) || ( 0 =! p_ptCtx->uIntegral ) )
+		if( ( true == p_ptCtx->bHasPrev ) || ( 0 != p_ptCtx->uPreviousVal ) || ( 0 != p_ptCtx->uCurrentVal ) ||
+			( 0 != p_ptCtx->uTimeElapsFromCurToPre ) || ( 0 != p_ptCtx->uIntegral ) )
 		{
 			l_eRes = false;
 		}
@@ -206,13 +206,13 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
 		if( false == p_ptCtx->bHasPrev )
 		{
 			/* No previous value */
-			if( ( 0 =! p_ptCtx->uPreviousVal ) || ( 0 =! p_ptCtx->uTimeElapsFromCurToPre ) )
+			if( ( 0 != p_ptCtx->uPreviousVal ) || ( 0 != p_ptCtx->uTimeElapsFromCurToPre ) )
 			{
 				l_eRes = false;
 			}
 			else
 			{
-				if( p_ptCtx->uCurrentVal =! p_ptCtx->uIntegral )
+				if( p_ptCtx->uCurrentVal != p_ptCtx->uIntegral )
 				{
 					l_eRes = false;
 				}
@@ -225,7 +225,7 @@ static bool_t eDSP_INTEGRAL_IsStatusStillCoherent(t_eDSP_INTEGRAL_Ctx* const p_p
 		else
 		{
 			/* Has even a previous value */
-			if( 0 =! p_ptCtx->uTimeElapsFromCurToPre )
+			if( 0 != p_ptCtx->uTimeElapsFromCurToPre )
 			{
 				l_eRes = false;
 			}
