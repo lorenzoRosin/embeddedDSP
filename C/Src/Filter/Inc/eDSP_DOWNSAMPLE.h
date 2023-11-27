@@ -1,14 +1,14 @@
 /**
- * @file       eDSP_HPASSFILTER.h
+ * @file       eDSP_DOWNSAMPLE.h
  *
- * @brief      Median filter implementation
+ * @brief      Decimator filter implementation
  *
  * @author     Lorenzo Rosin
  *
  **********************************************************************************************************************/
 
-#ifndef EDSP_HPASSFILTER_H
-#define EDSP_HPASSFILTER_H
+#ifndef EDSP_DOWNSAMPLE_H
+#define EDSP_DOWNSAMPLE_H
 
 
 
@@ -30,14 +30,14 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eDSP_HPASSFILTER_RES_OK = 0,
-    e_eDSP_HPASSFILTER_RES_BADPOINTER,
-    e_eDSP_HPASSFILTER_RES_BADPARAM,
-    e_eDSP_HPASSFILTER_RES_OVERFLOW,
-    e_eDSP_HPASSFILTER_RES_NEEDSMOREVALUE,
-    e_eDSP_HPASSFILTER_RES_CORRUPTCTX,
-    e_eDSP_HPASSFILTER_RES_NOINITLIB
-}e_eDSP_HPASSFILTER_RES;
+    e_eDSP_DOWNSAMPLE_RES_OK = 0,
+    e_eDSP_DOWNSAMPLE_RES_BADPOINTER,
+    e_eDSP_DOWNSAMPLE_RES_BADPARAM,
+    e_eDSP_DOWNSAMPLE_RES_OVERFLOW,
+    e_eDSP_DOWNSAMPLE_RES_NEEDSMOREVALUE,
+    e_eDSP_DOWNSAMPLE_RES_CORRUPTCTX,
+    e_eDSP_DOWNSAMPLE_RES_NOINITLIB
+}e_eDSP_DOWNSAMPLE_RES;
 
 typedef struct
 {
@@ -46,7 +46,8 @@ typedef struct
     uint32_t uFilledData;
     uint32_t uCurDataLocation;
     int64_t* piWindowsBuffer;    
-}t_eDSP_HPASSFILTER_Ctx;
+    uint32_t uDowSampleIndex;
+}t_eDSP_DOWNSAMPLE_Ctx;
 
 
 
@@ -56,44 +57,44 @@ typedef struct
 /**
  * @brief       Initialize the median filter with used buffer
  *
- * @param[in]   p_ptCtx             - Median filter context
+ * @param[in]   p_ptCtx             - Decimator filter context
  * @param[in]   p_piWindowsBuffer   - Buffer that must be provided in order to calculate the median value
  * @param[in]   p_uWindowsBuffLen   - Numbers of element of the p_piWindowsBuffer, and len of the median windows.
  *
- * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
- *		        e_eDSP_HPASSFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function
- *              e_eDSP_HPASSFILTER_RES_OK             - Median filter initialized successfully
+ * @return      e_eDSP_DOWNSAMPLE_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *		        e_eDSP_DOWNSAMPLE_RES_BADPARAM       - In case of an invalid parameter passed to the function
+ *              e_eDSP_DOWNSAMPLE_RES_OK             - Decimator filter initialized successfully
  */
-e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_InitCtx(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer, 
-                                                  uint32_t p_uWindowsBuffLen);
+e_eDSP_DOWNSAMPLE_RES eDSP_DOWNSAMPLE_InitCtx(t_eDSP_DOWNSAMPLE_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer, 
+                                              uint32_t p_uWindowsBuffLen, uint32_t p_uDowSampleIndex);
 
 /**
  * @brief       Check if the lib is initialized
  *
- * @param[in]   p_ptCtx         - Median filter context
+ * @param[in]   p_ptCtx         - Decimator filter context
  * @param[out]  p_pbIsInit      - Pointer to a bool_t variable that will be filled with true if the lib is initialized
  *
- * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER    - In case of bad pointer passed to the function
- *              e_eDSP_HPASSFILTER_RES_OK            - Operation ended correctly
+ * @return      e_eDSP_DOWNSAMPLE_RES_BADPOINTER    - In case of bad pointer passed to the function
+ *              e_eDSP_DOWNSAMPLE_RES_OK            - Operation ended correctly
  */
-e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_IsInit(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
+e_eDSP_DOWNSAMPLE_RES eDSP_DOWNSAMPLE_IsInit(t_eDSP_DOWNSAMPLE_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
  * @brief       Insert a new value for the median filter and calculate the filtered values. Keep in mind that during
  *              the first insertion we are not able o have some filtered data.
  *
- * @param[in]   p_ptCtx         - Median filter context
+ * @param[in]   p_ptCtx         - Decimator filter context
  * @param[in]   p_iValue        - Current value that we want to filter
  * @param[out]  p_pFilteredVal  - Pointer to an int64_t where the value of the calculated derivate will be placed.
  *
- * @return      e_eDSP_HPASSFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
- *		        e_eDSP_HPASSFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function.
- *		        e_eDSP_HPASSFILTER_RES_NOINITLIB      - Need to init the data stuffer context before taking some action
- *		        e_eDSP_HPASSFILTER_RES_CORRUPTCTX     - In case of an corrupted context
- *              e_eDSP_HPASSFILTER_RES_NEEDSMOREVALUE - Need to add more value to be able to calculate the derivate
- *              e_eDSP_HPASSFILTER_RES_OK             - Operation ended correctly
+ * @return      e_eDSP_DOWNSAMPLE_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *		        e_eDSP_DOWNSAMPLE_RES_BADPARAM       - In case of an invalid parameter passed to the function.
+ *		        e_eDSP_DOWNSAMPLE_RES_NOINITLIB      - Need to init the data stuffer context before taking some action
+ *		        e_eDSP_DOWNSAMPLE_RES_CORRUPTCTX     - In case of an corrupted context
+ *              e_eDSP_DOWNSAMPLE_RES_NEEDSMOREVALUE - Need to add more value to be able to calculate the derivate
+ *              e_eDSP_DOWNSAMPLE_RES_OK             - Operation ended correctly
  */
-e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_InsertValueAndCalculate(t_eDSP_HPASSFILTER_Ctx* const p_ptCtx, 
+e_eDSP_DOWNSAMPLE_RES eDSP_DOWNSAMPLE_InsertValueAndCalculate(t_eDSP_DOWNSAMPLE_Ctx* const p_ptCtx, 
                                                                   const int64_t p_iValue, int64_t* const p_pFilteredVal);
 
 
@@ -104,4 +105,4 @@ e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_InsertValueAndCalculate(t_eDSP_HPASSFILT
 
 
 
-#endif /* EDSP_HPASSFILTER_H */
+#endif /* EDSP_DOWNSAMPLE_H */

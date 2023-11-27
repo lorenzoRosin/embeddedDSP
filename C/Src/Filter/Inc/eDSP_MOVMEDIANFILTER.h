@@ -1,5 +1,5 @@
 /**
- * @file       eDSP_MEDIANFILTER.h
+ * @file       eDSP_MOVMEDIANFILTER.h
  *
  * @brief      Median filter implementation
  *
@@ -7,8 +7,8 @@
  *
  **********************************************************************************************************************/
 
-#ifndef EDSP_MEDIANFILTER_H
-#define EDSP_MEDIANFILTER_H
+#ifndef EDSP_MOVMEDIANFILTER_H
+#define EDSP_MOVMEDIANFILTER_H
 
 
 
@@ -30,14 +30,14 @@ extern "C" {
  **********************************************************************************************************************/
 typedef enum
 {
-    e_eDSP_MEDIANFILTER_RES_OK = 0,
-    e_eDSP_MEDIANFILTER_RES_BADPOINTER,
-    e_eDSP_MEDIANFILTER_RES_BADPARAM,
-    e_eDSP_MEDIANFILTER_RES_OVERFLOW,
-    e_eDSP_MEDIANFILTER_RES_NEEDSMOREVALUE,
-    e_eDSP_MEDIANFILTER_RES_CORRUPTCTX,
-    e_eDSP_MEDIANFILTER_RES_NOINITLIB
-}e_eDSP_MEDIANFILTER_RES;
+    e_eDSP_MOVMEDIANFILTER_RES_OK = 0,
+    e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER,
+    e_eDSP_MOVMEDIANFILTER_RES_BADPARAM,
+    e_eDSP_MOVMEDIANFILTER_RES_OVERFLOW,
+    e_eDSP_MOVMEDIANFILTER_RES_NEEDSMOREVALUE,
+    e_eDSP_MOVMEDIANFILTER_RES_CORRUPTCTX,
+    e_eDSP_MOVMEDIANFILTER_RES_NOINITLIB
+}e_eDSP_MOVMEDIANFILTER_RES;
 
 typedef struct
 {
@@ -46,7 +46,7 @@ typedef struct
     uint32_t uFilledData;
     uint32_t uCurDataLocation;
     int64_t* piWindowsBuffer;    
-}t_eDSP_MEDIANFILTER_Ctx;
+}t_eDSP_MOVMEDIANFILTER_Ctx;
 
 
 
@@ -60,11 +60,11 @@ typedef struct
  * @param[in]   p_piWindowsBuffer   - Buffer that must be provided in order to calculate the median value
  * @param[in]   p_uWindowsBuffLen   - Numbers of element of the p_piWindowsBuffer, and len of the median windows.
  *
- * @return      e_eDSP_MEDIANFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
- *		        e_eDSP_MEDIANFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function
- *              e_eDSP_MEDIANFILTER_RES_OK             - Median filter initialized successfully
+ * @return      e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *		        e_eDSP_MOVMEDIANFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function
+ *              e_eDSP_MOVMEDIANFILTER_RES_OK             - Median filter initialized successfully
  */
-e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InitCtx(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer, 
+e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_InitCtx(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer, 
                                                   uint32_t p_uWindowsBuffLen);
 
 /**
@@ -73,10 +73,10 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InitCtx(t_eDSP_MEDIANFILTER_Ctx* const
  * @param[in]   p_ptCtx         - Median filter context
  * @param[out]  p_pbIsInit      - Pointer to a bool_t variable that will be filled with true if the lib is initialized
  *
- * @return      e_eDSP_MEDIANFILTER_RES_BADPOINTER    - In case of bad pointer passed to the function
- *              e_eDSP_MEDIANFILTER_RES_OK            - Operation ended correctly
+ * @return      e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER    - In case of bad pointer passed to the function
+ *              e_eDSP_MOVMEDIANFILTER_RES_OK            - Operation ended correctly
  */
-e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_IsInit(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
+e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_IsInit(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
  * @brief       Insert a new value for the median filter and calculate the filtered values. Keep in mind that during
@@ -86,14 +86,14 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_IsInit(t_eDSP_MEDIANFILTER_Ctx* const 
  * @param[in]   p_iValue        - Current value that we want to filter
  * @param[out]  p_pFilteredVal  - Pointer to an int64_t where the value of the calculated derivate will be placed.
  *
- * @return      e_eDSP_MEDIANFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
- *		        e_eDSP_MEDIANFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function.
- *		        e_eDSP_MEDIANFILTER_RES_NOINITLIB      - Need to init the data stuffer context before taking some action
- *		        e_eDSP_MEDIANFILTER_RES_CORRUPTCTX     - In case of an corrupted context
- *              e_eDSP_MEDIANFILTER_RES_NEEDSMOREVALUE - Need to add more value to be able to calculate the derivate
- *              e_eDSP_MEDIANFILTER_RES_OK             - Operation ended correctly
+ * @return      e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
+ *		        e_eDSP_MOVMEDIANFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function.
+ *		        e_eDSP_MOVMEDIANFILTER_RES_NOINITLIB      - Need to init the data stuffer context before taking some action
+ *		        e_eDSP_MOVMEDIANFILTER_RES_CORRUPTCTX     - In case of an corrupted context
+ *              e_eDSP_MOVMEDIANFILTER_RES_NEEDSMOREVALUE - Need to add more value to be able to calculate the derivate
+ *              e_eDSP_MOVMEDIANFILTER_RES_OK             - Operation ended correctly
  */
-e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, 
+e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_InsertValueAndCalculate(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx, 
                                                                   const int64_t p_iValue, int64_t* const p_pFilteredVal);
 
 
@@ -104,4 +104,4 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANF
 
 
 
-#endif /* EDSP_MEDIANFILTER_H */
+#endif /* EDSP_MOVMEDIANFILTER_H */

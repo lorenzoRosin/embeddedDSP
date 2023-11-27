@@ -1,7 +1,7 @@
 /**
- * @file       eDSP_LPASSFILTER.h
+ * @file       eDSP_LPASSFILTER.c
  *
- * @brief      Multiple 2D point Linearization on a int64_t
+ * @brief      Median filter implementation
  *
  * @author     Lorenzo Rosin
  *
@@ -19,34 +19,42 @@
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
 static bool_t eDSP_LPASSFILTER_IsStatusStillCoherent(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx);
-static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InitCtx(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx)
+e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InitCtx(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer,
+                                                  uint32_t p_uWindowsBuffLen)
 {
 	/* Local variable */
 	e_eDSP_LPASSFILTER_RES l_eRes;
 
 	/* Check pointer validity */
-	if( NULL == p_ptCtx )
+	if( ( NULL == p_ptCtx ) || ( NULL == p_piWindowsBuffer ) )
 	{
 		l_eRes = e_eDSP_LPASSFILTER_RES_BADPOINTER;
 	}
 	else
 	{
-        /* Initialize internal status */
-        p_ptCtx->bIsInit = true;
-        p_ptCtx->bHasPrev = false;
-		p_ptCtx->bHasCurrent = false;
-		p_ptCtx->uPreviousVal = 0;
-		p_ptCtx->uCurrentVal = 0;
-		p_ptCtx->uTimeElapsedFromCurToPre = 0u;
+		/* Check data validity */
+		if( p_uWindowsBuffLen <= 2u )
+		{
+			l_eRes = e_eDSP_LPASSFILTER_RES_BADPARAM;
+		}
+		else
+		{
+			/* Initialize internal status */
+			p_ptCtx->bIsInit = true;
+			p_ptCtx->uWindowsLen = p_uWindowsBuffLen;
+			p_ptCtx->uFilledData = 0u;
+			p_ptCtx->uCurDataLocation = 0u;
+			memset(p_piWindowsBuffer, 0, sizeof(int64_t));
 
-		/* All OK */
-        l_eRes = e_eDSP_LPASSFILTER_RES_OK;
+			/* All OK */
+			l_eRes = e_eDSP_LPASSFILTER_RES_OK;
+		}
 	}
 
 	return l_eRes;
@@ -71,69 +79,23 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_IsInit(t_eDSP_LPASSFILTER_Ctx* const p_p
 	return l_eRes;
 }
 
-e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValue(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx, const int64_t p_iValue,
-                                                  const uint32_t p_timeFromLast)
-{
-	/* Local variable for return */
-	e_eDSP_LPASSFILTER_RES l_eRes;
-
-	/* Check pointer validity */
-	if( NULL == p_ptCtx )
-	{
-		l_eRes = e_eDSP_LPASSFILTER_RES_BADPOINTER;
-	}
-	else
-	{
-		/* Check Init */
-		if( false == p_ptCtx->bIsInit )
-		{
-			l_eRes = e_eDSP_LPASSFILTER_RES_NOINITLIB;
-		}
-		else
-		{
-            /* Check data coherence */
-            if( false == eDSP_LPASSFILTER_IsStatusStillCoherent(p_ptCtx) )
-            {
-                l_eRes = e_eDSP_LPASSFILTER_RES_CORRUPTCTX;
-            }
-			else
-			{
-                /* Check data validity */
-				if( 0u == p_timeFromLast )
-				{
-					l_eRes = e_eDSP_LPASSFILTER_RES_BADPARAM;
-				}
-				else
-				{
-					/* Check data validity */
-					p_ptCtx->uPreviousVal = p_ptCtx->uCurrentVal;
-					p_ptCtx->uCurrentVal = p_iValue;
-					p_ptCtx->uTimeElapsedFromCurToPre = p_timeFromLast;
-
-					if( false == p_ptCtx->bHasCurrent )
-					{
-						p_ptCtx->bHasCurrent = true;
-					}
-					else
-					{
-						p_ptCtx->bHasPrev = true;
-					}
-				}
-			}
-		}
-    }
-
-	return l_eRes;
-}
-
-e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_CalcDerivate(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx, int64_t* const p_piDerivate)
+e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx,
+                                                                  const int64_t p_iValue, int64_t* const p_pFilteredVal)
 {
 	/* Local variable for return */
 	e_eDSP_LPASSFILTER_RES l_eRes;
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
+	/* Local variable for calculation */
+	uint32_t l_uCnt;
+	int64_t l_iSum;
+	int64_t l_iMean;
+	int64_t l_iNearest;
+	int64_t l_iNearestDiff;
+	int64_t l_iCurrDiff;
+
 	/* Check pointer validity */
-	if( ( NULL == p_ptCtx ) || ( NULL == p_piDerivate ))
+	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )
 	{
 		l_eRes = e_eDSP_LPASSFILTER_RES_BADPOINTER;
 	}
@@ -153,20 +115,92 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_CalcDerivate(t_eDSP_LPASSFILTER_Ctx* con
             }
 			else
 			{
-                /* Check if we can proceed */
-				if( false == p_ptCtx->bHasPrev )
+				/* Insert data */
+				p_ptCtx->piWindowsBuffer[p_ptCtx->uCurDataLocation] = p_iValue;
+				p_ptCtx->uCurDataLocation++;
+
+				/* Manage rolback */
+				if( p_ptCtx->uCurDataLocation >= p_ptCtx->uWindowsLen )
 				{
-					l_eRes = e_eDSP_LPASSFILTER_RES_BADPARAM;
+					p_ptCtx->uCurDataLocation = 0u;
+				}
+
+				if( p_ptCtx->uFilledData < ( p_ptCtx->uWindowsLen - 1u ) )
+				{
+					/* Increase filler counter */
+					p_ptCtx->uFilledData++;
+
+					/* Need more data */
+					l_eRes = e_eDSP_LPASSFILTER_RES_NEEDSMOREVALUE;
 				}
 				else
 				{
-					l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(p_ptCtx->uCurrentVal, p_ptCtx->uPreviousVal);
-					l_eRes = eDSP_LPASSFILTER_MaxCheckResToS2DP(l_eMaxRes);
+					/* The window is full */
+					l_eRes = e_eDSP_LPASSFILTER_RES_OK;
+					l_uCnt = 0u;
+					l_iSum = 0u;
+
+					/* Calculate the factibility of the sum for the means */
+					while( ( e_eDSP_LPASSFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+					{
+						l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iSum, p_ptCtx->piWindowsBuffer[l_uCnt]);
+						l_eRes = eDSP_LPASSFILTER_MaxCheckResToMED(l_eMaxRes);
+
+						if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+						{
+							l_uCnt++;
+							l_iSum += p_ptCtx->piWindowsBuffer[l_uCnt];
+						}
+					}
 
 					if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
 					{
-						/* calculate */
-						*p_piDerivate = p_ptCtx->uCurrentVal - p_ptCtx->uPreviousVal / p_ptCtx->uTimeElapsedFromCurToPre;
+						/* Calculate the mean */
+						l_iMean = l_iSum / p_ptCtx->uWindowsLen;
+
+						/* re-init counter */
+						l_uCnt = 0u;
+
+						/* search for the nearest one */
+						while( ( e_eDSP_LPASSFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+						{
+							l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_iMean, p_ptCtx->piWindowsBuffer[l_uCnt]);
+							l_eRes = eDSP_LPASSFILTER_MaxCheckResToMED(l_eMaxRes);
+
+							if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+							{
+								/* Calc diff */
+								l_iCurrDiff = l_iMean - p_ptCtx->piWindowsBuffer[l_uCnt];
+
+								/* abs of the difference */
+								if( l_iCurrDiff < 0u )
+								{
+									l_iCurrDiff = -l_iCurrDiff;
+								}
+
+								/* On first round init default variable */
+								if( 0u == l_uCnt )
+								{
+									/* On first round init default variable */
+									l_iNearest = p_ptCtx->piWindowsBuffer[l_uCnt];
+									l_iNearestDiff = l_iCurrDiff;
+								}
+								else
+								{
+									/* Compare with the alredy founded */
+									if( l_iCurrDiff < l_iNearestDiff )
+									{
+										l_iNearestDiff = p_ptCtx->piWindowsBuffer[l_uCnt];
+									}
+								}
+							}
+						}
+
+						/* if all ok return value */
+						if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+						{
+							*p_pFilteredVal = l_iNearest;
+						}
 					}
 				}
 			}
@@ -186,12 +220,37 @@ static bool_t eDSP_LPASSFILTER_IsStatusStillCoherent(t_eDSP_LPASSFILTER_Ctx* con
     /* Return local var */
     bool_t l_eRes;
 
-	l_eRes = true;
+	/* Check pointer validity */
+	if( NULL == p_ptCtx->piWindowsBuffer )
+	{
+		l_eRes = false;
+	}
+    else
+    {
+		/* Check data validity */
+		if( ( p_ptCtx->uWindowsLen <= 2u ) || ( p_ptCtx->uFilledData > p_ptCtx->uWindowsLen ) ||
+			( p_ptCtx->uCurDataLocation >= p_ptCtx->uWindowsLen )  )
+		{
+			l_eRes = false;
+		}
+		else
+		{
+			/* Check data validity */
+			if( ( p_ptCtx->uFilledData < p_ptCtx->uWindowsLen ) && ( p_ptCtx->uCurDataLocation >= p_ptCtx->uFilledData ) )
+			{
+				l_eRes = false;
+			}
+			else
+			{
+				l_eRes = true;
+			}
+		}
+    }
 
     return l_eRes;
 }
 
-static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToS2DP(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
 	e_eDSP_LPASSFILTER_RES l_eRet;
 

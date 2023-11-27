@@ -1,5 +1,5 @@
 /**
- * @file       eDSP_MEDIANFILTER.c
+ * @file       eDSP_MOVMEDIANFILTER.c
  *
  * @brief      Median filter implementation
  *
@@ -10,7 +10,7 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eDSP_MEDIANFILTER.h"
+#include "eDSP_MOVMEDIANFILTER.h"
 #include "eDSP_MAXCHECK.h"
 
 
@@ -18,30 +18,30 @@
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eDSP_MEDIANFILTER_IsStatusStillCoherent(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx);
-static e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet);
+static bool_t eDSP_MOVMEDIANFILTER_IsStatusStillCoherent(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx);
+static e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InitCtx(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer,
+e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_InitCtx(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer,
                                                   uint32_t p_uWindowsBuffLen)
 {
 	/* Local variable */
-	e_eDSP_MEDIANFILTER_RES l_eRes;
+	e_eDSP_MOVMEDIANFILTER_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_piWindowsBuffer ) )
 	{
-		l_eRes = e_eDSP_MEDIANFILTER_RES_BADPOINTER;
+		l_eRes = e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check data validity */
 		if( p_uWindowsBuffLen <= 2u )
 		{
-			l_eRes = e_eDSP_MEDIANFILTER_RES_BADPARAM;
+			l_eRes = e_eDSP_MOVMEDIANFILTER_RES_BADPARAM;
 		}
 		else
 		{
@@ -53,37 +53,37 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InitCtx(t_eDSP_MEDIANFILTER_Ctx* const
 			memset(p_piWindowsBuffer, 0, sizeof(int64_t));
 
 			/* All OK */
-			l_eRes = e_eDSP_MEDIANFILTER_RES_OK;
+			l_eRes = e_eDSP_MOVMEDIANFILTER_RES_OK;
 		}
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_IsInit(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_IsInit(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eDSP_MEDIANFILTER_RES l_eRes;
+	e_eDSP_MOVMEDIANFILTER_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eDSP_MEDIANFILTER_RES_BADPOINTER;
+		l_eRes = e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eDSP_MEDIANFILTER_RES_OK;
+        l_eRes = e_eDSP_MOVMEDIANFILTER_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx,
+e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_InsertValueAndCalculate(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx,
                                                                   const int64_t p_iValue, int64_t* const p_pFilteredVal)
 {
 	/* Local variable for return */
-	e_eDSP_MEDIANFILTER_RES l_eRes;
+	e_eDSP_MOVMEDIANFILTER_RES l_eRes;
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Local variable for calculation */
@@ -97,21 +97,21 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANF
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )
 	{
-		l_eRes = e_eDSP_MEDIANFILTER_RES_BADPOINTER;
+		l_eRes = e_eDSP_MOVMEDIANFILTER_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eDSP_MEDIANFILTER_RES_NOINITLIB;
+			l_eRes = e_eDSP_MOVMEDIANFILTER_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eDSP_MEDIANFILTER_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_MOVMEDIANFILTER_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eDSP_MEDIANFILTER_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_MOVMEDIANFILTER_RES_CORRUPTCTX;
             }
 			else
 			{
@@ -131,29 +131,29 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANF
 					p_ptCtx->uFilledData++;
 
 					/* Need more data */
-					l_eRes = e_eDSP_MEDIANFILTER_RES_NEEDSMOREVALUE;
+					l_eRes = e_eDSP_MOVMEDIANFILTER_RES_NEEDSMOREVALUE;
 				}
 				else
 				{
 					/* The window is full */
-					l_eRes = e_eDSP_MEDIANFILTER_RES_OK;
+					l_eRes = e_eDSP_MOVMEDIANFILTER_RES_OK;
 					l_uCnt = 0u;
 					l_iSum = 0u;
 
 					/* Calculate the factibility of the sum for the means */
-					while( ( e_eDSP_MEDIANFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+					while( ( e_eDSP_MOVMEDIANFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
 					{
 						l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iSum, p_ptCtx->piWindowsBuffer[l_uCnt]);
-						l_eRes = eDSP_MEDIANFILTER_MaxCheckResToMED(l_eMaxRes);
+						l_eRes = eDSP_MOVMEDIANFILTER_MaxCheckResToMED(l_eMaxRes);
 
-						if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+						if( e_eDSP_MOVMEDIANFILTER_RES_OK == l_eRes )
 						{
 							l_uCnt++;
 							l_iSum += p_ptCtx->piWindowsBuffer[l_uCnt];
 						}
 					}
 
-					if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+					if( e_eDSP_MOVMEDIANFILTER_RES_OK == l_eRes )
 					{
 						/* Calculate the mean */
 						l_iMean = l_iSum / p_ptCtx->uWindowsLen;
@@ -162,12 +162,12 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANF
 						l_uCnt = 0u;
 
 						/* search for the nearest one */
-						while( ( e_eDSP_MEDIANFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+						while( ( e_eDSP_MOVMEDIANFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
 						{
 							l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_iMean, p_ptCtx->piWindowsBuffer[l_uCnt]);
-							l_eRes = eDSP_MEDIANFILTER_MaxCheckResToMED(l_eMaxRes);
+							l_eRes = eDSP_MOVMEDIANFILTER_MaxCheckResToMED(l_eMaxRes);
 
-							if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+							if( e_eDSP_MOVMEDIANFILTER_RES_OK == l_eRes )
 							{
 								/* Calc diff */
 								l_iCurrDiff = l_iMean - p_ptCtx->piWindowsBuffer[l_uCnt];
@@ -197,7 +197,7 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANF
 						}
 
 						/* if all ok return value */
-						if( e_eDSP_MEDIANFILTER_RES_OK == l_eRes )
+						if( e_eDSP_MOVMEDIANFILTER_RES_OK == l_eRes )
 						{
 							*p_pFilteredVal = l_iNearest;
 						}
@@ -215,7 +215,7 @@ e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_InsertValueAndCalculate(t_eDSP_MEDIANF
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eDSP_MEDIANFILTER_IsStatusStillCoherent(t_eDSP_MEDIANFILTER_Ctx* const p_ptCtx)
+static bool_t eDSP_MOVMEDIANFILTER_IsStatusStillCoherent(t_eDSP_MOVMEDIANFILTER_Ctx* const p_ptCtx)
 {
     /* Return local var */
     bool_t l_eRes;
@@ -250,17 +250,17 @@ static bool_t eDSP_MEDIANFILTER_IsStatusStillCoherent(t_eDSP_MEDIANFILTER_Ctx* c
     return l_eRes;
 }
 
-static e_eDSP_MEDIANFILTER_RES eDSP_MEDIANFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+static e_eDSP_MOVMEDIANFILTER_RES eDSP_MOVMEDIANFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
-	e_eDSP_MEDIANFILTER_RES l_eRet;
+	e_eDSP_MOVMEDIANFILTER_RES l_eRet;
 
 	if( e_eDSP_MAXCHECK_RES_OK == p_tMaxRet )
 	{
-		l_eRet = e_eDSP_MEDIANFILTER_RES_OK;
+		l_eRet = e_eDSP_MOVMEDIANFILTER_RES_OK;
 	}
 	else
 	{
-		l_eRet = e_eDSP_MEDIANFILTER_RES_OVERFLOW;
+		l_eRet = e_eDSP_MOVMEDIANFILTER_RES_OVERFLOW;
 	}
 
 	return l_eRet;

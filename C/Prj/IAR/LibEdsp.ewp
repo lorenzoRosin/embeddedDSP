@@ -1104,7 +1104,7 @@
         <group>
             <name>Inc</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_DECIMATORFILTER.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_DECIMATIONFILTER.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_HPASSFILTER.h</name>
@@ -1113,16 +1113,19 @@
                 <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_LPASSFILTER.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MEANFILTER.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MOVMEANFILTER.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MEDIANFILTER.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MOVMEDIANFILTER.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_DOWNSAMPLE.h</name>
             </file>
         </group>
         <group>
             <name>Src</name>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_DECIMATORFILTER.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_DECIMATIONFILTER.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_HPASSFILTER.c</name>
@@ -1131,10 +1134,13 @@
                 <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_LPASSFILTER.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MEANFILTER.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MOVMEANFILTER.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MEDIANFILTER.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MOVMEDIANFILTER.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_DOWNSAMPLE.c</name>
             </file>
         </group>
     </group>
