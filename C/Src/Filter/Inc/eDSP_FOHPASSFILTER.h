@@ -1,7 +1,7 @@
 /**
  * @file       eDSP_FOHPASSFILTER.h
  *
- * @brief      Median filter implementation
+ * @brief      First Order High pass filter implementation
  *
  * @author     Lorenzo Rosin
  *
@@ -42,10 +42,8 @@ typedef enum
 typedef struct
 {
     bool_t   bIsInit;
-    uint32_t uWindowsLen;
-    uint32_t uFilledData;
-    uint32_t uCurDataLocation;
-    int64_t* piWindowsBuffer;    
+    int64_t  iPrevOutValue;
+    uint64_t uCutFreqMilHz;
 }t_eDSP_FOHPASSFILTER_Ctx;
 
 
@@ -54,23 +52,22 @@ typedef struct
  * GLOBAL PROTOTYPES
  **********************************************************************************************************************/
 /**
- * @brief       Initialize the median filter with used buffer
+ * @brief       Initialize the first order High pass filter
  *
- * @param[in]   p_ptCtx             - Median filter context
- * @param[in]   p_piWindowsBuffer   - Buffer that must be provided in order to calculate the median value
- * @param[in]   p_uWindowsBuffLen   - Numbers of element of the p_piWindowsBuffer, and len of the median windows.
+ * @param[in]   p_ptCtx            - First order High pass filter context
+ * @param[in]   p_uCutFreqMilHz    - Cuttoff frequency of the first order High pass filter, in milli Hertz
+
  *
  * @return      e_eDSP_FOHPASSFILTER_RES_BADPOINTER     - In case of bad pointer passed to the function
  *		        e_eDSP_FOHPASSFILTER_RES_BADPARAM       - In case of an invalid parameter passed to the function
- *              e_eDSP_FOHPASSFILTER_RES_OK             - Median filter initialized successfully
+ *              e_eDSP_FOHPASSFILTER_RES_OK             - First order High pass filter initialized successfully
  */
-e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InitCtx(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer, 
-                                                  uint32_t p_uWindowsBuffLen);
+e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InitCtx(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx, uint64_t p_uCutFreqMilHz);
 
 /**
  * @brief       Check if the lib is initialized
  *
- * @param[in]   p_ptCtx         - Median filter context
+ * @param[in]   p_ptCtx         - First order High pass filter context
  * @param[out]  p_pbIsInit      - Pointer to a bool_t variable that will be filled with true if the lib is initialized
  *
  * @return      e_eDSP_FOHPASSFILTER_RES_BADPOINTER    - In case of bad pointer passed to the function
@@ -79,10 +76,10 @@ e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InitCtx(t_eDSP_FOHPASSFILTER_Ctx* co
 e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_IsInit(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit);
 
 /**
- * @brief       Insert a new value for the median filter and calculate the filtered values. Keep in mind that during
- *              the first insertion we are not able o have some filtered data.
+ * @brief       Insert a new value for the first order High pass filter and calculate the filtered values. Keep in mind
+ *              that during the first insertion we are not able o have some filtered data.
  *
- * @param[in]   p_ptCtx         - Median filter context
+ * @param[in]   p_ptCtx         - First order High pass filter context
  * @param[in]   p_iValue        - Current value that we want to filter
  * @param[out]  p_pFilteredVal  - Pointer to an int64_t where the value of the calculated derivate will be placed.
  *
@@ -93,8 +90,9 @@ e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_IsInit(t_eDSP_FOHPASSFILTER_Ctx* con
  *              e_eDSP_FOHPASSFILTER_RES_NEEDSMOREVALUE - Need to add more value to be able to calculate the derivate
  *              e_eDSP_FOHPASSFILTER_RES_OK             - Operation ended correctly
  */
-e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InsertValueAndCalculate(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx, 
-                                                                  const int64_t p_iValue, int64_t* const p_pFilteredVal);
+e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InsertValueAndCalculate(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx,
+                                                                    const int64_t p_iValue,
+                                                                    int64_t* const p_pFilteredVal);
 
 
 

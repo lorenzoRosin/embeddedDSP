@@ -1,7 +1,7 @@
 /**
  * @file       eDSP_FOLPASSFILTER.h
  *
- * @brief      First Order First order Low pass filter implementation
+ * @brief      First Order Low pass filter implementation
  *
  * @author     Lorenzo Rosin
  *
