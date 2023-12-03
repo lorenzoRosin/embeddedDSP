@@ -1,5 +1,5 @@
 /**
- * @file       eDSP_LPASSFILTER.c
+ * @file       eDSP_FOHPASSFILTER.c
  *
  * @brief      Median filter implementation
  *
@@ -10,7 +10,7 @@
 /***********************************************************************************************************************
  *      INCLUDES
  **********************************************************************************************************************/
-#include "eDSP_LPASSFILTER.h"
+#include "eDSP_FOHPASSFILTER.h"
 #include "eDSP_MAXCHECK.h"
 
 
@@ -18,31 +18,30 @@
 /***********************************************************************************************************************
  *  PRIVATE STATIC FUNCTION DECLARATION
  **********************************************************************************************************************/
-static bool_t eDSP_LPASSFILTER_IsStatusStillCoherent(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx);
-static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet);
-
+static bool_t eDSP_FOHPASSFILTER_IsStatusStillCoherent(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx);
+static e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
-e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InitCtx(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer,
+e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InitCtx(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx, int64_t* p_piWindowsBuffer,
                                                   uint32_t p_uWindowsBuffLen)
 {
 	/* Local variable */
-	e_eDSP_LPASSFILTER_RES l_eRes;
+	e_eDSP_FOHPASSFILTER_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_piWindowsBuffer ) )
 	{
-		l_eRes = e_eDSP_LPASSFILTER_RES_BADPOINTER;
+		l_eRes = e_eDSP_FOHPASSFILTER_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check data validity */
 		if( p_uWindowsBuffLen <= 2u )
 		{
-			l_eRes = e_eDSP_LPASSFILTER_RES_BADPARAM;
+			l_eRes = e_eDSP_FOHPASSFILTER_RES_BADPARAM;
 		}
 		else
 		{
@@ -54,37 +53,37 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InitCtx(t_eDSP_LPASSFILTER_Ctx* const p_
 			memset(p_piWindowsBuffer, 0, sizeof(int64_t));
 
 			/* All OK */
-			l_eRes = e_eDSP_LPASSFILTER_RES_OK;
+			l_eRes = e_eDSP_FOHPASSFILTER_RES_OK;
 		}
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_IsInit(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
+e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_IsInit(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx, bool_t* p_pbIsInit)
 {
 	/* Local variable */
-	e_eDSP_LPASSFILTER_RES l_eRes;
+	e_eDSP_FOHPASSFILTER_RES l_eRes;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pbIsInit ) )
 	{
-		l_eRes = e_eDSP_LPASSFILTER_RES_BADPOINTER;
+		l_eRes = e_eDSP_FOHPASSFILTER_RES_BADPOINTER;
 	}
 	else
 	{
         *p_pbIsInit = p_ptCtx->bIsInit;
-        l_eRes = e_eDSP_LPASSFILTER_RES_OK;
+        l_eRes = e_eDSP_FOHPASSFILTER_RES_OK;
 	}
 
 	return l_eRes;
 }
 
-e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx,
+e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_InsertValueAndCalculate(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx,
                                                                   const int64_t p_iValue, int64_t* const p_pFilteredVal)
 {
 	/* Local variable for return */
-	e_eDSP_LPASSFILTER_RES l_eRes;
+	e_eDSP_FOHPASSFILTER_RES l_eRes;
 	e_eDSP_MAXCHECK_RES l_eMaxRes;
 
 	/* Local variable for calculation */
@@ -98,17 +97,17 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 
 	/* To calculate the Low pass filter we will use an RC circuit.
 
-	   -----/\/\/\----------
-	   				  |
-		Vin			 ___    Vout
-					 ___
-					  |
+	   -----| |-------------
+	   				 /
+		Vin			 \    Vout
+					 /
+					 \
 	   ---------------------
 	   The equantion of the circuit is:
-	   Vin(ti)-Vout(ti) = Vr(ti) -> Vin(ti)-Vout(ti) = R * Ir(ti) -> Vin(ti)-Vout(ti) = R * ( C * (dVout(ti)/dT) ) ->
-	   and using discrete time we have: Vin(ti)-Vout(ti) = RC * ( ( Vout(i)-Vout(i-1) ) / ( t(i)-t(i-1) ) ) ) ->
-	   Vout(ti) = Vin(ti) - RC * ( ( Vout(i)-Vout(i-1) ) / ( t(i)-t(i-1) ) ) ) -> ..... ->
-	   Vout(ti) = ( ( t(i)-t(i-1) ) / ( RC+( t(i)-t(i-1) )  ) ) * Vin(ti) + ( RC / ( RC + ( t(i)-t(i-1) ))) * Vout(ti-1)
+	   Vout(ti) = R * Ir(ti) -> Vout(ti) = R * C * ( dVin(t)/ dt - dVout(i)/dt )
+	   and using discrete time we have:
+	   Vout(ti) = R * C * ( Vin(i)-Vin(i-1)/( t(i)-t(i-1) ) - Vout(i)-Vout(i-1)/( t(i)-t(i-1) ) )
+	   Vout(ti) =  ( RC / ( t(i)-t(i-1) ) ) * ( Vout(i-1) + Vin(i)-Vin(i-1) )
 	   Doing other math in the frequency domains we found out that the cutoff frequency is Fc = 1 / ( 2 pi RC )
 	   and so the value of RC = 1 / ( 2 pi Fc )
 	*/
@@ -118,21 +117,21 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )
 	{
-		l_eRes = e_eDSP_LPASSFILTER_RES_BADPOINTER;
+		l_eRes = e_eDSP_FOHPASSFILTER_RES_BADPOINTER;
 	}
 	else
 	{
 		/* Check Init */
 		if( false == p_ptCtx->bIsInit )
 		{
-			l_eRes = e_eDSP_LPASSFILTER_RES_NOINITLIB;
+			l_eRes = e_eDSP_FOHPASSFILTER_RES_NOINITLIB;
 		}
 		else
 		{
             /* Check data coherence */
-            if( false == eDSP_LPASSFILTER_IsStatusStillCoherent(p_ptCtx) )
+            if( false == eDSP_FOHPASSFILTER_IsStatusStillCoherent(p_ptCtx) )
             {
-                l_eRes = e_eDSP_LPASSFILTER_RES_CORRUPTCTX;
+                l_eRes = e_eDSP_FOHPASSFILTER_RES_CORRUPTCTX;
             }
 			else
 			{
@@ -152,29 +151,29 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 					p_ptCtx->uFilledData++;
 
 					/* Need more data */
-					l_eRes = e_eDSP_LPASSFILTER_RES_NEEDSMOREVALUE;
+					l_eRes = e_eDSP_FOHPASSFILTER_RES_NEEDSMOREVALUE;
 				}
 				else
 				{
 					/* The window is full */
-					l_eRes = e_eDSP_LPASSFILTER_RES_OK;
+					l_eRes = e_eDSP_FOHPASSFILTER_RES_OK;
 					l_uCnt = 0u;
 					l_iSum = 0u;
 
 					/* Calculate the factibility of the sum for the means */
-					while( ( e_eDSP_LPASSFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+					while( ( e_eDSP_FOHPASSFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
 					{
 						l_eMaxRes = eDSP_MAXCHECK_SUMI64Check(l_iSum, p_ptCtx->piWindowsBuffer[l_uCnt]);
-						l_eRes = eDSP_LPASSFILTER_MaxCheckResToMED(l_eMaxRes);
+						l_eRes = eDSP_FOHPASSFILTER_MaxCheckResToMED(l_eMaxRes);
 
-						if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+						if( e_eDSP_FOHPASSFILTER_RES_OK == l_eRes )
 						{
 							l_uCnt++;
 							l_iSum += p_ptCtx->piWindowsBuffer[l_uCnt];
 						}
 					}
 
-					if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+					if( e_eDSP_FOHPASSFILTER_RES_OK == l_eRes )
 					{
 						/* Calculate the mean */
 						l_iMean = l_iSum / p_ptCtx->uWindowsLen;
@@ -183,12 +182,12 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 						l_uCnt = 0u;
 
 						/* search for the nearest one */
-						while( ( e_eDSP_LPASSFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
+						while( ( e_eDSP_FOHPASSFILTER_RES_OK == l_eRes ) && ( l_uCnt < p_ptCtx->uWindowsLen ) )
 						{
 							l_eMaxRes = eDSP_MAXCHECK_SUBTI64Check(l_iMean, p_ptCtx->piWindowsBuffer[l_uCnt]);
-							l_eRes = eDSP_LPASSFILTER_MaxCheckResToMED(l_eMaxRes);
+							l_eRes = eDSP_FOHPASSFILTER_MaxCheckResToMED(l_eMaxRes);
 
-							if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+							if( e_eDSP_FOHPASSFILTER_RES_OK == l_eRes )
 							{
 								/* Calc diff */
 								l_iCurrDiff = l_iMean - p_ptCtx->piWindowsBuffer[l_uCnt];
@@ -218,7 +217,7 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 						}
 
 						/* if all ok return value */
-						if( e_eDSP_LPASSFILTER_RES_OK == l_eRes )
+						if( e_eDSP_FOHPASSFILTER_RES_OK == l_eRes )
 						{
 							*p_pFilteredVal = l_iNearest;
 						}
@@ -236,7 +235,7 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 /***********************************************************************************************************************
  *  PRIVATE FUNCTION
  **********************************************************************************************************************/
-static bool_t eDSP_LPASSFILTER_IsStatusStillCoherent(t_eDSP_LPASSFILTER_Ctx* const p_ptCtx)
+static bool_t eDSP_FOHPASSFILTER_IsStatusStillCoherent(t_eDSP_FOHPASSFILTER_Ctx* const p_ptCtx)
 {
     /* Return local var */
     bool_t l_eRes;
@@ -271,17 +270,17 @@ static bool_t eDSP_LPASSFILTER_IsStatusStillCoherent(t_eDSP_LPASSFILTER_Ctx* con
     return l_eRes;
 }
 
-static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet)
+static e_eDSP_FOHPASSFILTER_RES eDSP_FOHPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet)
 {
-	e_eDSP_LPASSFILTER_RES l_eRet;
+	e_eDSP_FOHPASSFILTER_RES l_eRet;
 
 	if( e_eDSP_MAXCHECK_RES_OK == p_tMaxRet )
 	{
-		l_eRet = e_eDSP_LPASSFILTER_RES_OK;
+		l_eRet = e_eDSP_FOHPASSFILTER_RES_OK;
 	}
 	else
 	{
-		l_eRet = e_eDSP_LPASSFILTER_RES_OVERFLOW;
+		l_eRet = e_eDSP_FOHPASSFILTER_RES_OVERFLOW;
 	}
 
 	return l_eRet;

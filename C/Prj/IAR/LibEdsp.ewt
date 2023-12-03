@@ -1446,10 +1446,10 @@
                 <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_DECIMATIONFILTER.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_HPASSFILTER.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_FOHPASSFILTER.h</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_LPASSFILTER.h</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_FOLPASSFILTER.h</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Filter\Inc\eDSP_MOVMEANFILTER.h</name>
@@ -1467,10 +1467,10 @@
                 <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_DECIMATIONFILTER.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_HPASSFILTER.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_FOHPASSFILTER.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_LPASSFILTER.c</name>
+                <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_FOLPASSFILTER.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\Src\Filter\Src\eDSP_MOVMEANFILTER.c</name>
