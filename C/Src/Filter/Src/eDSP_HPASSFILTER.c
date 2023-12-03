@@ -94,6 +94,26 @@ e_eDSP_HPASSFILTER_RES eDSP_HPASSFILTER_InsertValueAndCalculate(t_eDSP_HPASSFILT
 	int64_t l_iNearestDiff;
 	int64_t l_iCurrDiff;
 
+
+	/* To calculate the Low pass filter we will use an RC circuit.
+
+	   -----| |-------------
+	   				 /
+		Vin			 \    Vout
+					 /
+					 \
+	   ---------------------
+	   The equantion of the circuit is:
+	   Vout(ti) = R * Ir(ti) -> Vout(ti) = R * C * ( dVin(t)/ dt - dVout(i)/dt )
+	   and using discrete time we have:
+	   Vout(ti) = R * C * ( Vin(i)-Vin(i-1)/( t(i)-t(i-1) ) - Vout(i)-Vout(i-1)/( t(i)-t(i-1) ) )
+	   Vout(ti) =  ( RC / ( t(i)-t(i-1) ) ) * ( Vout(i-1) + Vin(i)-Vin(i-1) )
+	   Doing other math in the frequency domains we found out that the cutoff frequency is Fc = 1 / ( 2 pi RC )
+	   and so the value of RC = 1 / ( 2 pi Fc )
+	*/
+
+
+
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )
 	{

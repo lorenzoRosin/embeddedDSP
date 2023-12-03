@@ -89,9 +89,6 @@ e_eDSP_MOVMEANFILTER_RES eDSP_MOVMEANFILTER_InsertValueAndCalculate(t_eDSP_MOVME
 	/* Local variable for calculation */
 	uint32_t l_uCnt;
 	int64_t  l_iSum;
-	int64_t  l_iNearest;
-	int64_t  l_iNearestDiff;
-	int64_t  l_iCurrDiff;
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )

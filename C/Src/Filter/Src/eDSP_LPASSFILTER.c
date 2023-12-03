@@ -22,6 +22,7 @@ static bool_t eDSP_LPASSFILTER_IsStatusStillCoherent(t_eDSP_LPASSFILTER_Ctx* con
 static e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_MaxCheckResToMED(const e_eDSP_MAXCHECK_RES p_tMaxRet);
 
 
+
 /***********************************************************************************************************************
  *   GLOBAL FUNCTIONS
  **********************************************************************************************************************/
@@ -93,6 +94,26 @@ e_eDSP_LPASSFILTER_RES eDSP_LPASSFILTER_InsertValueAndCalculate(t_eDSP_LPASSFILT
 	int64_t l_iNearest;
 	int64_t l_iNearestDiff;
 	int64_t l_iCurrDiff;
+
+
+	/* To calculate the Low pass filter we will use an RC circuit.
+
+	   -----/\/\/\----------
+	   				  |
+		Vin			 ___    Vout
+					 ___
+					  |
+	   ---------------------
+	   The equantion of the circuit is:
+	   Vin(ti)-Vout(ti) = Vr(ti) -> Vin(ti)-Vout(ti) = R * Ir(ti) -> Vin(ti)-Vout(ti) = R * ( C * (dVout(ti)/dT) ) ->
+	   and using discrete time we have: Vin(ti)-Vout(ti) = RC * ( ( Vout(i)-Vout(i-1) ) / ( t(i)-t(i-1) ) ) ) ->
+	   Vout(ti) = Vin(ti) - RC * ( ( Vout(i)-Vout(i-1) ) / ( t(i)-t(i-1) ) ) ) -> ..... ->
+	   Vout(ti) = ( ( t(i)-t(i-1) ) / ( RC+( t(i)-t(i-1) )  ) ) * Vin(ti) + ( RC / ( RC + ( t(i)-t(i-1) ))) * Vout(ti-1)
+	   Doing other math in the frequency domains we found out that the cutoff frequency is Fc = 1 / ( 2 pi RC )
+	   and so the value of RC = 1 / ( 2 pi Fc )
+	*/
+
+
 
 	/* Check pointer validity */
 	if( ( NULL == p_ptCtx ) || ( NULL == p_pFilteredVal ) )
